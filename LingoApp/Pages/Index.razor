@@ -1,7 +1,68 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<div>
+	<nav class="navbar">
+		<div class="container-fluid">
+			<form class="d-flex">
+				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success" type="submit">Search</button>
+			</form>
+		</div>
+	</nav>
+	@foreach (var serie in Series)
+	{
+		<div class="card mb-3" style="max-width: 540px;">
+			<div class="row g-0">
+				<div class="col-md-4">
+					<img src="@serie.Cover" class="img-fluid rounded-start" alt="Cover">
+				</div>
+				<div class="col-md-8">
+					<div class="card-body">
+						<h5 class="card-title">@serie.Name</h5>
+						<p class="card-text"><small class="text-muted">@serie.ReleaseDate</small></p>
+						<p class="card-text">@serie.Description</p>						
+					</div>
+				</div>
+			</div>
+		</div>
+@*		<div>
+			<div class="card" style="width: 18rem">
+				<img src="@serie.Cover" class="card-img-top" alt="Alt Name" />
+				<div class="card-body">
+					<h5 class="card-title">@serie.Name</h5>
+					<p class="card-text">@serie.Description</p>
+				</div>
+			</div>
+		</div>*@
+	}
+</div>
 
-Welcome to your new app.
+@code {
+	public List<SerieModel> Series { get; set; } = new();
+	protected override void OnInitialized()
+	{
+		SetFakeData();
+	}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+	private void SetFakeData()
+	{
+		Series = new()
+		{
+			new SerieModel
+			{
+				Name="The Big Bang Theory",
+				Description="Physicists Leonard and Sheldon find their nerd-centric social circle with pals Howard and Raj expanding when aspiring actress Penny moves in next door.",
+				ReleaseDate=DateOnly.Parse("01.01.2007"),
+				Cover="tbbt.jpg"
+			},
+			new SerieModel
+			{
+				Name="The Boys",
+				Description="A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+				ReleaseDate=DateOnly.Parse("03.02.2019"),
+				Cover="the_boys.jpg"
+			},
+		};
+	}
+
+}
