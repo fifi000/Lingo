@@ -1,4 +1,4 @@
-﻿@page "/serie"
+﻿@page "/serie/{serieId:int}"
 
 <div>
 	<h1>@Serie.Name</h1>
@@ -10,7 +10,7 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                @for (int i = 0; i < Serie.Seasons.Count(); i++)
+                @for (int i = 0; i < 12; i++)
                 {
                     <li class="page-item"><a class="page-link" href="#">@(i+1)</a></li>
                 }
@@ -27,5 +27,35 @@
 
 @code {
 	[Parameter]
+	public int SerieId { get; set; }
+
 	public SerieModel Serie { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Serie = GetFakeData().FirstOrDefault(x => x.Id == SerieId);
+	}
+
+	private List<SerieModel> GetFakeData()
+	{
+		return new()
+		{
+			new SerieModel
+			{
+				Id=1,
+				Name="The Big Bang Theory",
+				Description="Physicists Leonard and Sheldon find their nerd-centric social circle with pals Howard and Raj expanding when aspiring actress Penny moves in next door.",
+				ReleaseDate=DateOnly.Parse("01.01.2007"),
+				Cover="tbbt.jpg"			
+			},
+			new SerieModel
+			{
+				Id=2,
+				Name="The Boys",
+				Description="A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+				ReleaseDate=DateOnly.Parse("03.02.2019"),
+				Cover="the_boys.jpg"
+			},
+		};
+	}
 }
