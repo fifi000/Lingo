@@ -1,4 +1,4 @@
-﻿namespace LingoApp.Models;
+﻿namespace LingoLibrary.Models;
 
 public class SerieModel
 {
