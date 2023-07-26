@@ -1,6 +1,9 @@
 ﻿using LingoLibrary.Models;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using static System.Net.WebRequestMethods;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -16,8 +19,6 @@ public class TmdbManager
 
 	public async Task<List<SerieModel>> GetSeriesByName(string serieName)
 	{
-		serieName = serieName.Replace(" ", "%20");
-
 		var options = new RestClientOptions($"{_baseUrl}/search/tv?query={serieName}");
 		var client = new RestClient(options);
 		var request = new RestRequest();
@@ -32,8 +33,29 @@ public class TmdbManager
 			throw new Exception(response.ErrorMessage);
 		}
 
-		var results = new List<SerieModel>();
+		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
+		
+		var output = new List<SerieModel>();
 
-		return results;
+		foreach (var result in json.results)
+		{
+			output.Add(new SerieModel
+			{
+				Id = result.id,
+				Name = result.name,
+				Description = result.overview,
+				Cover = $"https://image.tmdb.org/t/p/w500/{result.poster_path}",
+				//Cover = "https://image.tmdb.org/t/p/w500/ooBGRQBdbGzBxAVfExiO8r7kloA.jpg",
+				ReleaseDate = result.first_air_date
+			});
+		}
+
+
+		return output;
+	}
+	
+	public async Task<SerieModel> GetSerieById(int id)
+	{
+		throw new NotImplementedException();
 	}
 }
