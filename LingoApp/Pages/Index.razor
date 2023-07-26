@@ -12,19 +12,8 @@
 	</nav>
 	@foreach (var serie in Series)
 	{
-		<div class="card mb-3" @onclick="@(() => OnSerieSelection(serie))">
-			<div class="row g-0">
-				<div class="col-md-2">
-					<img src="@serie.Cover" class="img-fluid rounded-start" alt="Cover">
-				</div>
-				<div class="col-md-10">
-					<div class="card-body">
-						<h5 class="card-title">@serie.Name</h5>
-						<p class="card-text"><small class="text-muted">@serie.ReleaseDate</small></p>
-						<p class="card-text">@TextShortener(serie.Description, 200)</p>
-					</div>
-				</div>
-			</div>
+		<div @onclick="() => OnSerieSelection(serie)">
+			<InfoCard Serie=serie ShortDescription=true/>
 		</div>
 	}
 </div>
@@ -53,16 +42,6 @@
 	{
 		Series = new();
 		Series = await _manager.GetSeriesByName(SearchPhrase);
-	}
-
-	private string TextShortener(string text, int maxChars)
-	{
-		if (text.Length > maxChars)
-		{
-			return $"{text.Substring(0, maxChars)}...";
-		}
-
-		return text;
 	}
 
 	private void SetFakeData()

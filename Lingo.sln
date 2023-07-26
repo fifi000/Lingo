@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LingoApp", "LingoApp\LingoApp.csproj", "{793B0E69-510C-4E6F-81F6-ED8923361A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LingoLibrary", "LingoLibrary\LingoLibrary.csproj", "{439E0447-86CA-4C13-B35B-B3398803755A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LingoLibrary", "LingoLibrary\LingoLibrary.csproj", "{439E0447-86CA-4C13-B35B-B3398803755A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
