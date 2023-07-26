@@ -1,9 +1,6 @@
 ﻿using LingoLibrary.Models;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using static System.Net.WebRequestMethods;
 
 namespace LingoLibrary.ApiManagers;
 
