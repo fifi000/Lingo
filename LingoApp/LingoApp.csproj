@@ -29,6 +29,7 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+        <UserSecretsId>088c9a1e-5a94-4e3f-9824-9ba0213dba14</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -50,6 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     </ItemGroup>
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LingoLibrary.ApiManagers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace LingoApp;
 
@@ -22,7 +24,9 @@ public static class MauiProgram
 #endif
 
 		//builder.Services.AddSingleton<WeatherForecastService>();
+		builder.Configuration.AddUserSecrets("088c9a1e-5a94-4e3f-9824-9ba0213dba14");
+		var app = builder.Build();
 
-		return builder.Build();
+		return app;
 	}
 }
