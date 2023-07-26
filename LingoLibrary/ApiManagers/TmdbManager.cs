@@ -50,12 +50,42 @@ public class TmdbManager
 			});
 		}
 
-
 		return output;
 	}
 	
 	public async Task<SerieModel> GetSerieById(int id)
 	{
-		throw new NotImplementedException();
+		var output = new SerieModel();
+		
+		var options = new RestClientOptions($"{_baseUrl}/tv/{id}");
+		var client = new RestClient(options);
+		var request = new RestRequest();
+
+		request.AddHeader("Accept", "application/json");
+		request.AddHeader("Authorization", $"Bearer {_token}");
+
+		var response = await client.GetAsync(request);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new Exception(response.ErrorMessage);
+		}
+
+		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+		output.Id = json.id;
+		output.Name = json.name;
+		output.Description = json.overview;
+		output.ReleaseDate = json.first_air_date;
+		output.Cover = $"https://image.tmdb.org/t/p/w500/{json.poster_path}";
+
+		output.Seasons = new();
+
+		foreach (var season in json.seasons)
+		{
+			output.Seasons.Add(new SeasonModel { Id = season.id });
+		}
+
+		return output;
 	}
 }
