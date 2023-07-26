@@ -1,14 +1,14 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Configuration;
 
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration 
 
 <div>
 	<nav class="navbar">
-		<div class="container-fluid">
-			<form class="d-flex">
-				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-				<button class="btn btn-outline-success" type="submit">Search</button>
-			</form>
+		<div class="input-group mb-3">
+			<input @bind-value="SearchPhrase" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+			<button class="btn btn-outline-success" @onclick="@(() => SearchSeries())">Search</button>
 		</div>
 	</nav>
 	@foreach (var serie in Series)
@@ -22,7 +22,7 @@
 					<div class="card-body">
 						<h5 class="card-title">@serie.Name</h5>
 						<p class="card-text"><small class="text-muted">@serie.ReleaseDate</small></p>
-						<p class="card-text">@serie.Description</p>						
+						<p class="card-text">@TextShortener(serie.Description, 200)</p>
 					</div>
 				</div>
 			</div>
@@ -31,15 +31,39 @@
 </div>
 
 @code {
+
+	private TmdbManager _manager;
+
 	public List<SerieModel> Series { get; set; } = new();
+
+	public string SearchPhrase { get; set; }
+
 	protected override void OnInitialized()
 	{
-		SetFakeData();
+		//SetFakeData();
+		var token = Configuration["Api:tmdb_token"];
+		_manager = new TmdbManager(token);
 	}
 
 	private void OnSerieSelection(SerieModel serie)
 	{
 		NavigationManager.NavigateTo($"/serie/{serie.Id}");
+	}
+
+	private async Task SearchSeries()
+	{
+		Series = new();
+		Series = await _manager.GetSeriesByName(SearchPhrase);
+	}
+
+	private string TextShortener(string text, int maxChars)
+	{
+		if (text.Length > maxChars)
+		{
+			return $"{text.Substring(0, maxChars)}...";
+		}
+
+		return text;
 	}
 
 	private void SetFakeData()
