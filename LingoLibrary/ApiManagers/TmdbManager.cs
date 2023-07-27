@@ -1,6 +1,7 @@
 ﻿using LingoLibrary.Models;
 using Newtonsoft.Json;
 using RestSharp;
+using static System.Net.WebRequestMethods;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -8,6 +9,7 @@ public class TmdbManager
 {
 	private readonly string _token;
 	private readonly string _baseUrl = "https://api.themoviedb.org/3/";
+	private readonly string _imageBaseUrl = "https://image.tmdb.org/t/p/w500/";
 
 	public TmdbManager(string token)
     {
@@ -41,7 +43,7 @@ public class TmdbManager
 				Id = result.id,
 				Name = result.name,
 				Description = result.overview,
-				Cover = $"https://image.tmdb.org/t/p/w500/{result.poster_path}",
+				Cover = $"{_imageBaseUrl}{result.poster_path}",
 				//Cover = "https://image.tmdb.org/t/p/w500/ooBGRQBdbGzBxAVfExiO8r7kloA.jpg",
 				ReleaseDate = result.first_air_date
 			});
@@ -51,9 +53,7 @@ public class TmdbManager
 	}
 	
 	public async Task<SerieModel> GetSerieById(int id)
-	{
-		var output = new SerieModel();
-		
+	{		
 		var options = new RestClientOptions($"{_baseUrl}/tv/{id}");
 		var client = new RestClient(options);
 		var request = new RestRequest();
@@ -70,6 +70,8 @@ public class TmdbManager
 
 		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
 
+		var output = new SerieModel();
+
 		output.Id = json.id;
 		output.Name = json.name;
 		output.Description = json.overview;
@@ -80,7 +82,49 @@ public class TmdbManager
 
 		foreach (var season in json.seasons)
 		{
-			output.Seasons.Add(new SeasonModel { Id = season.id });
+			SeasonModel model = new();
+
+			model.Id = season.id;
+			model.Number = season.season_number;
+			model.Episodes = await GetEpisodes(output.Id, model.Number);
+			output.Seasons.Add(model);
+		}
+
+		return output;
+	}
+
+	public async Task<List<EpisodeModel>> GetEpisodes(int serieId, int seasonNumber)
+	{
+		var options = new RestClientOptions($"{_baseUrl}/tv/{serieId}/season/{seasonNumber}");
+		var client = new RestClient(options);
+		var request = new RestRequest();
+
+		request.AddHeader("Accept", "application/json");
+		request.AddHeader("Authorization", $"Bearer {_token}");
+
+		var response = await client.GetAsync(request);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new Exception(response.ErrorMessage);
+		}
+
+		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+		var output = new List<EpisodeModel>();
+
+		EpisodeModel model;
+		foreach (var episode in json.episodes)
+		{
+			model = new();
+
+			model.Id = episode.id;
+			model.Number = episode.episode_number;
+			model.Name = episode.name;
+			model.Description = episode.overview;
+			model.Cover = $"{_imageBaseUrl}{episode.still_path}";
+
+			output.Add(model);
 		}
 
 		return output;
