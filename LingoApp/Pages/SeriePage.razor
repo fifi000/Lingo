@@ -18,22 +18,42 @@
 			<nav aria-label="Seasons Navigation">
 				<ul class="pagination">
 					<li class="page-item">
-						<a class="page-link" href="#" aria-label="Previous">
+						<a class="page-link" aria-label="Previous">
 							<span aria-hidden="true">&laquo;</span>
 						</a>
 					</li>
-					@for (int i = 0; i < Serie.Seasons.Count; i++)
+					@foreach (var season in Serie.Seasons)
 					{
-						<li class="page-item"><a class="page-link" href="#">@(i + 1)</a></li>
+						<li class="page-item" @onclick="() => _currentSeason = season.Number"><a class="page-link">@season.Number</a></li>
 					}
 					<li class="page-item">
-						<a class="page-link" href="#" aria-label="Next">
+						<a class="page-link" aria-label="Next">
 							<span aria-hidden="true">&raquo;</span>
 						</a>
 					</li>
 				</ul>
 			</nav>
 		</div>
+		
+		<div>
+			<div class="container mb-3">
+				<div class="row row-cols-1 row-cols-md-3 g-4">
+					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
+					{
+						<div class="col">
+							<div class="card h-100">
+								<img src="@episode.Cover" class="img-fluid rounded-start" alt="Cover">
+								<div class="card-body">
+									<h5 class="card-title">@episode.Name</h5>
+									<p class="card-text">@episode.Description</p>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+
 	}
 </div>
 
@@ -44,37 +64,17 @@
 
 	public SerieModel Serie { get; set; }
 
+
 	private TmdbManager _manager;
+	private int _currentSeason;
 
 	protected async override Task OnInitializedAsync()
 	{
-		//Serie = GetFakeData().FirstOrDefault(x => x.Id == SerieId);
 		var token = Configuration["Api:tmdb_token"];
 		_manager = new TmdbManager(token);
 
 		Serie = await _manager.GetSerieById(SerieId);
+		_currentSeason = Serie.Seasons.First().Number;
 	}
 
-	private List<SerieModel> GetFakeData()
-	{
-		return new()
-		{
-			new SerieModel
-			{
-				Id=1,
-				Name="The Big Bang Theory",
-				Description="Physicists Leonard and Sheldon find their nerd-centric social circle with pals Howard and Raj expanding when aspiring actress Penny moves in next door.",
-				ReleaseDate=DateOnly.Parse("01.01.2007"),
-				Cover="tbbt.jpg"			
-			},
-			new SerieModel
-			{
-				Id=2,
-				Name="The Boys",
-				Description="A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
-				ReleaseDate=DateOnly.Parse("03.02.2019"),
-				Cover="the_boys.jpg"
-			},
-		};
-	}
 }
