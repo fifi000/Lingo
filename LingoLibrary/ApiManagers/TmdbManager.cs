@@ -38,15 +38,24 @@ public class TmdbManager
 
 		foreach (var result in json.results)
 		{
-			output.Add(new SerieModel
+			var model = new SerieModel();
+
+			try
 			{
-				Id = result.id,
-				Name = result.name,
-				Description = result.overview,
-				Cover = $"{_imageBaseUrl}{result.poster_path}",
-				//Cover = "https://image.tmdb.org/t/p/w500/ooBGRQBdbGzBxAVfExiO8r7kloA.jpg",
-				ReleaseDate = result.first_air_date
-			});
+				model.Id = result.id;
+				model.Name = result.name;
+				model.Description = result.overview;
+				//model.Cover = (result.poster_path is not null) ? $"{_imageBaseUrl}{result.poster_path}" : null;
+				model.Cover = $"{_imageBaseUrl}{result?.poster_path}";
+				model.ReleaseDate = result.first_air_date;
+			}
+			catch
+			{
+				// skip this 
+				continue;
+			}
+
+			output.Add(model);
 		}
 
 		return output;
