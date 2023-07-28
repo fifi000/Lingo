@@ -99,6 +99,9 @@ public class TmdbManager
 			output.Seasons.Add(model);
 		}
 
+		// delete specials
+		output.Seasons = output.Seasons.Where(x => x.Number > 0).ToList();
+
 		return output;
 	}
 
