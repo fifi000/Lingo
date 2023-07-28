@@ -44,7 +44,8 @@
 							<div class="card h-100">
 								<img src="@episode.Cover" class="img-fluid rounded-start" alt="Cover">
 								<div class="card-body">
-									<h5 class="card-title">@episode.Name</h5>
+									<h5 class="card-title fs-5">@episode.Name</h5>
+									<p class="card-text"><small class="text-muted">@($"E{episode.Number.ToString("D2")}")</small></p>
 									<p class="card-text">@episode.Description</p>
 								</div>
 							</div>
@@ -53,7 +54,6 @@
 				</div>
 			</div>
 		</div>
-
 	}
 </div>
 
