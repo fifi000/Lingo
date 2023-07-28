@@ -1,14 +1,33 @@
 ﻿
 <div class="col">
-	<div class="card h-100">
+	<div class="card">
 		<img src="@Episode.Cover" class="img-fluid rounded-start" alt="Cover">
 		<div class="card-body">
 			<h5 class="card-title">@Episode.Name</h5>
 			<p class="card-text">
 				<small class="text-muted">@($"E{Episode.Number.ToString("D2")}")</small>
 			</p>
-			<p class="card-text">@Episode.Description</p>
+	
 		</div>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item">
+				<div class="accordion accordion-flush" id="@($"accordionExample{Episode.Number}")">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="@($"heading{Episode.Number}")">
+							<button class="accordion-button collapsed px-1" type="button" data-bs-toggle="collapse" data-bs-target="#@($"collapse{Episode.Number}")" aria-expanded="true" aria-controls="@($"collapse{Episode.Number}")">
+								Description
+							</button>
+						</h2>
+						<div id="@($"collapse{Episode.Number}")" class="accordion-collapse collapse" aria-labelledby="@($"heading{Episode.Number}")" data-bs-parent="#@($"accordionExample{Episode.Number}")">
+							<div class="accordion-body px-0">
+								@Episode.Description
+							</div>
+						</div>
+						@*<p class="card-text">@Episode.Description</p>*@
+					</div>
+				</div>
+			</li>
+		</ul>
 	</div>
 </div>
 
