@@ -12,23 +12,23 @@
 	}
 	else
 	{
-		<div class="navbar navbar-expand">
+		<div class="navbar">
 			<SerieInfoCard Serie=Serie ShortDescription=false/>
 		</div>
 
-		<nav class="position-sticky top-0 py-2 bg-success" style="z-index: 1020" aria-label="Seasons Navigation">
-			<ul class="pagination">
+		<nav class="bg-white top-0 pt-3 position-sticky border rounded-bottom" style="z-index: 1020; --bs-bg-opacity: .95" aria-label="Seasons Navigation">
+			<ul class="pagination justify-content-center">
 				@foreach (var season in Serie.Seasons)
 				{
 					<li class="page-item @((_currentSeason == season.Number) ? "active" : "")" @onclick="() => _currentSeason = season.Number">
-						<a class="page-link">@season.Number</a>
+						<a class="page-link user-select-none">@season.Number</a>
 					</li>
 				}
 			</ul>
 		</nav>
 		
 		<div>
-			<div class="container mb-3">
+			<div class="container my-4">
 				<div class="row row-cols-1 g-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
 					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
 					{
