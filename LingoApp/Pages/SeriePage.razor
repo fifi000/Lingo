@@ -12,28 +12,20 @@
 	}
 	else
 	{
-		<SerieInfoCard Serie=Serie ShortDescription=false/>
-
-		<div>
-			<nav aria-label="Seasons Navigation">
-				<ul class="pagination">
-					<li class="page-item">
-						<a class="page-link" aria-label="Previous">
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-					@foreach (var season in Serie.Seasons)
-					{
-						<li class="page-item" @onclick="() => _currentSeason = season.Number"><a class="page-link">@season.Number</a></li>
-					}
-					<li class="page-item">
-						<a class="page-link" aria-label="Next">
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
+		<div class="navbar navbar-expand">
+			<SerieInfoCard Serie=Serie ShortDescription=false/>
 		</div>
+
+		<nav class="position-sticky top-0 py-2 bg-success" style="z-index: 1020" aria-label="Seasons Navigation">
+			<ul class="pagination">
+				@foreach (var season in Serie.Seasons)
+				{
+					<li class="page-item @((_currentSeason == season.Number) ? "active" : "")" @onclick="() => _currentSeason = season.Number">
+						<a class="page-link">@season.Number</a>
+					</li>
+				}
+			</ul>
+		</nav>
 		
 		<div>
 			<div class="container mb-3">
