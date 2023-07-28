@@ -1,0 +1,18 @@
+﻿
+<div class="col">
+	<div class="card h-100">
+		<img src="@Episode.Cover" class="img-fluid rounded-start" alt="Cover">
+		<div class="card-body">
+			<h5 class="card-title">@Episode.Name</h5>
+			<p class="card-text">
+				<small class="text-muted">@($"E{Episode.Number.ToString("D2")}")</small>
+			</p>
+			<p class="card-text">@Episode.Description</p>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public EpisodeModel Episode { get; set; }
+}

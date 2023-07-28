@@ -12,7 +12,7 @@
 	}
 	else
 	{
-		<InfoCard Serie=Serie ShortDescription=false/>
+		<SerieInfoCard Serie=Serie ShortDescription=false/>
 
 		<div>
 			<nav aria-label="Seasons Navigation">
@@ -40,16 +40,7 @@
 				<div class="row row-cols-1 row-cols-md-3 g-4">
 					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
 					{
-						<div class="col">
-							<div class="card h-100">
-								<img src="@episode.Cover" class="img-fluid rounded-start" alt="Cover">
-								<div class="card-body">
-									<h5 class="card-title fs-5">@episode.Name</h5>
-									<p class="card-text"><small class="text-muted">@($"E{episode.Number.ToString("D2")}")</small></p>
-									<p class="card-text">@episode.Description</p>
-								</div>
-							</div>
-						</div>
+						<EpisodeInfoCard Episode="episode"/>
 					}
 				</div>
 			</div>

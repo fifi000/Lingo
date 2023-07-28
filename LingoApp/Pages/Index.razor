@@ -13,7 +13,7 @@
 	@foreach (var serie in Series)
 	{
 		<div @onclick="() => OnSerieSelection(serie)">
-			<InfoCard Serie=serie ShortDescription=true/>
+			<SerieInfoCard Serie=serie ShortDescription=true/>
 		</div>
 	}
 </div>
