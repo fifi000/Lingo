@@ -1,4 +1,5 @@
-﻿
+﻿@inject NavigationManager NavigationManager
+
 <div class="col">
 	<div class="card h-100">
 		<img src="@Episode.Cover" class="img-fluid rounded-start" alt="Cover">
@@ -12,7 +13,7 @@
 		<ul class="list-group list-group-flush justify-content-end">
 			<li class="list-group-item">
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-					<button class="btn btn-primary">Words</button>
+					<button class="btn btn-primary" @onclick="ShowSubtitles">Words</button>
 				</div>
 			</li>
 		</ul>
@@ -22,4 +23,9 @@
 @code {
 	[Parameter]
 	public EpisodeModel Episode { get; set; }
+
+	private void ShowSubtitles()
+	{
+		NavigationManager.NavigateTo($"/subtitles/{Episode.Id}");
+	}
 }

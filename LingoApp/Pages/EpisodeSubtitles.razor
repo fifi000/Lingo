@@ -1,0 +1,32 @@
+﻿@page "/subtitles/{episodeId:int}"
+
+@inject OpenSubtitlesManager OpenSubtitlesManager
+
+<h3>Subtitles</h3>
+
+@if (_subtitles is null)
+{
+	<div class="spinner-grow" role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div>
+}
+else
+{
+	<div class="card">
+		<div class="card-body">
+			<span style="white-space: pre-line">@_subtitles</span>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public int EpisodeId { get; set; }
+
+	private string _subtitles;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+	}
+}
