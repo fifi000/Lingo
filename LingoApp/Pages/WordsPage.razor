@@ -1,0 +1,40 @@
+﻿@page "/words"
+
+<h3>Words</h3>
+
+@if (Set is null)
+{
+	<LoadingSpinner />
+}
+else
+{
+	<table class="table table-hover table-bordered">
+		<thead>
+			<tr>
+				@*<th scope="col">#</th>*@
+				<th scope="col">English</th>
+				<th scope="col">Polish</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var pair in Set.Words)
+			{
+				<tr>
+					<td>@pair.English</td>
+					<td>@pair.Polish</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+
+
+@code {
+	public SetModel Set { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Set = Helper.GetFakeSetModels().First();
+	}
+}
