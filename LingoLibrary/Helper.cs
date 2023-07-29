@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using LingoLibrary.Models;
+using System.Security.Cryptography;
 
 namespace LingoLibrary;
 
@@ -49,5 +50,48 @@ public static class Helper
 			&& line.Contains("-->") == false
 			&& (line.Contains("<font") || line.Contains("font>")) == false
 		);
+	}
+
+	public static List<SetModel> GetFakeSetModels()
+	{
+		return new()
+		{
+			new ()
+			{
+				SerieId = 1,
+				SeasonId = 1,
+				EpisodeId = 1,
+				Words = new ()
+				{
+					new WordModel { English = "Hello", Polish = "Cześć" },
+					new WordModel { English = "World", Polish = "Świat" },
+					new WordModel { English = "Goodbye", Polish = "Do widzenia" }
+				}
+			},
+			new ()
+			{
+				SerieId = 1,
+				SeasonId = 1,
+				EpisodeId = 2,
+				Words = new List<WordModel>
+				{
+					new WordModel { English = "House", Polish = "Dom" },
+					new WordModel { English = "Car", Polish = "Samochód" },
+					new WordModel { English = "Tree", Polish = "Drzewo" }
+				}
+			},
+			new ()
+			{
+				SerieId = 2,
+				SeasonId = 1,
+				EpisodeId = 1,
+				Words = new List<WordModel>
+				{
+					new WordModel { English = "Cat", Polish = "Kot" },
+					new WordModel { English = "Dog", Polish = "Pies" },
+					new WordModel { English = "Bird", Polish = "Ptak" }
+				}
+			}
+		};
 	}
 }
