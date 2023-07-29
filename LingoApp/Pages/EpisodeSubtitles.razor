@@ -14,7 +14,11 @@ else
 {
 	<div class="card">
 		<div class="card-body">
-			<span style="white-space: pre-line">@_subtitles</span>
+			@*<span style="white-space: pre-line">@_subtitles</span>*@
+			@foreach (var line in Helper.FormatSubtitles(_subtitles))
+			{
+				<p>@line</p>
+			}
 		</div>
 	</div>
 }
