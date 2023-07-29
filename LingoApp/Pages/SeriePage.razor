@@ -1,6 +1,6 @@
 ﻿@page "/serie/{serieId:int}"
 
-@inject IConfiguration Configuration
+@inject TmdbManager TmdbManager
 
 <div>
 
@@ -47,16 +47,11 @@
 
 	public SerieModel Serie { get; set; }
 
-
-	private TmdbManager _manager;
 	private int _currentSeason;
 
 	protected async override Task OnInitializedAsync()
 	{
-		var token = Configuration["Api:tmdb_token"];
-		_manager = new TmdbManager(token);
-
-		Serie = await _manager.GetSerieById(SerieId);
+		Serie = await TmdbManager.GetSerieById(SerieId);
 		_currentSeason = Serie.Seasons.First().Number;
 	}
 

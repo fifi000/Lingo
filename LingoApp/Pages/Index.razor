@@ -1,7 +1,7 @@
 ﻿@page "/"
 
 @inject NavigationManager NavigationManager
-@inject IConfiguration Configuration 
+@inject TmdbManager TmdbManager
 
 <div>
 	<nav class="navbar">
@@ -19,19 +19,9 @@
 </div>
 
 @code {
-
-	private TmdbManager _manager;
-
 	public List<SerieModel> Series { get; set; } = new();
 
 	public string SearchPhrase { get; set; }
-
-	protected override void OnInitialized()
-	{
-		//SetFakeData();
-		var token = Configuration["Api:tmdb_token"];
-		_manager = new TmdbManager(token);
-	}
 
 	private void OnSerieSelection(SerieModel serie)
 	{
@@ -41,30 +31,6 @@
 	private async Task SearchSeries()
 	{
 		Series = new();
-		Series = await _manager.GetSeriesByName(SearchPhrase);
+		Series = await TmdbManager.GetSeriesByName(SearchPhrase);
 	}
-
-	private void SetFakeData()
-	{
-		Series = new()
-		{
-			new SerieModel
-			{
-				Id=1,
-				Name="The Big Bang Theory",
-				Description="Physicists Leonard and Sheldon find their nerd-centric social circle with pals Howard and Raj expanding when aspiring actress Penny moves in next door.",
-				ReleaseDate=DateOnly.Parse("01.01.2007"),
-				Cover="tbbt.jpg"
-			},
-			new SerieModel
-			{
-				Id=2,
-				Name="The Boys",
-				Description="A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
-				ReleaseDate=DateOnly.Parse("03.02.2019"),
-				Cover="the_boys.jpg"
-			},
-		};
-	}
-
 }

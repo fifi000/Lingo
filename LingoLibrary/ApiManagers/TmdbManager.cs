@@ -1,4 +1,5 @@
 ﻿using LingoLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
 using static System.Net.WebRequestMethods;
@@ -11,9 +12,9 @@ public class TmdbManager
 	private readonly string _baseUrl = "https://api.themoviedb.org/3/";
 	private readonly string _imageBaseUrl = "https://image.tmdb.org/t/p/w500/";
 
-	public TmdbManager(string token)
+	public TmdbManager(IConfiguration configuration)
     {
-		_token = token;
+		_token = configuration["Api:tmdb_token"];
 	}
 
 	public async Task<List<SerieModel>> GetSeriesByName(string serieName)

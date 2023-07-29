@@ -22,11 +22,11 @@ public static class MauiProgram
 	builder.Services.AddBlazorWebViewDeveloperTools();
 	builder.Logging.AddDebug();
 #endif
-
-		//builder.Services.AddSingleton<WeatherForecastService>();
 		builder.Configuration.AddUserSecrets("088c9a1e-5a94-4e3f-9824-9ba0213dba14");
-		var app = builder.Build();
 
-		return app;
+		builder.Services.AddSingleton<TmdbManager>();
+		builder.Services.AddSingleton<OpenSubtitlesManager>();
+
+		return builder.Build();
 	}
 }
