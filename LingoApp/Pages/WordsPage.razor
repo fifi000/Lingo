@@ -1,5 +1,7 @@
 ﻿@page "/words"
 
+@inject LiteDbDataAccess DataManager
+
 <h3>Words</h3>
 
 @if (Set is null)
@@ -8,7 +10,7 @@
 }
 else
 {
-	<table class="table table-hover table-bordered">
+	<table class="table table-hover">
 		<thead>
 			<tr>
 				@*<th scope="col">#</th>*@
@@ -35,6 +37,6 @@ else
 
 	protected override void OnInitialized()
 	{
-		Set = Helper.GetFakeSetModels().First();
+		Set = DataManager.GetAllSets().First();
 	}
 }
