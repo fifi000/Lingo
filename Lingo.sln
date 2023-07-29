@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LingoApp", "LingoApp\LingoA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LingoLibrary", "LingoLibrary\LingoLibrary.csproj", "{439E0447-86CA-4C13-B35B-B3398803755A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{E893DE3E-EF94-45FB-83A1-4BCC565CB1BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{E893DE3E-EF94-45FB-83A1-4BCC565CB1BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
