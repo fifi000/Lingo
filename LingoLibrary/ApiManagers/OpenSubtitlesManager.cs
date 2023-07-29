@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace LingoLibrary.ApiManagers;
@@ -12,11 +13,11 @@ public class OpenSubtitlesManager
 
 	private string _token;
 
-	public OpenSubtitlesManager(string apiKey, string username, string password)
+	public OpenSubtitlesManager(IConfiguration configuration)
     {
-		_apiKey = apiKey;
-		_username = username;
-		_password = password;
+		_apiKey = configuration["Api:open_subtitles:api_key"];
+		_username = configuration["Api:open_subtitles:username"];
+		_password = configuration["Api:open_subtitles:password"];
 	}
 
 	public async Task<string> GetSubtitles(int episodeId)

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
-using static System.Net.WebRequestMethods;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -46,13 +45,11 @@ public class TmdbManager
 				model.Id = result.id;
 				model.Name = result.name;
 				model.Description = result.overview;
-				//model.Cover = (result.poster_path is not null) ? $"{_imageBaseUrl}{result.poster_path}" : null;
 				model.Cover = $"{_imageBaseUrl}{result?.poster_path}";
 				model.ReleaseDate = result.first_air_date;
 			}
-			catch
+			catch 
 			{
-				// skip this 
 				continue;
 			}
 
