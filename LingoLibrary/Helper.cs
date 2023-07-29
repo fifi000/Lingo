@@ -47,7 +47,7 @@ public static class Helper
 			String.IsNullOrEmpty(line) == false
 			&& Int16.TryParse(line, out _) == false
 			&& line.Contains("-->") == false
-			&& (line.Contains("<font") || line.Contains("font>") == false)
+			&& (line.Contains("<font") || line.Contains("font>")) == false
 		);
 	}
 }
