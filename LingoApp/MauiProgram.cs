@@ -1,4 +1,5 @@
-﻿using LingoLibrary.ApiManagers;
+﻿using Data;
+using LingoLibrary.ApiManagers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -26,6 +27,7 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<TmdbManager>();
 		builder.Services.AddSingleton<OpenSubtitlesManager>();
+		builder.Services.AddScoped<LiteDbDataAccess>();
 
 		return builder.Build();
 	}
