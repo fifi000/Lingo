@@ -33,7 +33,7 @@ public class OpenSubtitlesManager
 
 	private async Task LogIn()
 	{
-		var client = new RestClient("https://api.opensubtitles.com/api/v1/login");
+		var client = new RestClient($"{_baseUrl}/login");
 		var request = new RestRequest();
 
 		request.AddHeader("Content-Type", "application/json");
@@ -63,7 +63,7 @@ public class OpenSubtitlesManager
 
 	private async Task<string> GetDownloadLink(int fileId)
 	{
-		var client = new RestClient($"{_baseUrl}download");
+		var client = new RestClient($"{_baseUrl}/download");
 		var request = new RestRequest();
 
 		request.AddHeader("Content-Type", "application/json");
