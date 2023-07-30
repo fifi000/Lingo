@@ -28,6 +28,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<TmdbManager>();
 		builder.Services.AddSingleton<OpenSubtitlesManager>();
 		builder.Services.AddScoped<LiteDbDataAccess>();
+		builder.Services.AddScoped<OpenAiManager>();
 
 		return builder.Build();
 	}
