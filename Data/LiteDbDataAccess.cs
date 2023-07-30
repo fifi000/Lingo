@@ -31,11 +31,21 @@ public class LiteDbDataAccess
 		return sets.FindAll().ToList();
 	}
 
+	public SetModel GetSet(int episodeId)
+	{
+		using var db = new LiteDatabase(_databasePath);
+
+		var sets = db.GetCollection<SetModel>("sets");
+
+		// Assuming the combination of SerieId, SeasonId, and EpisodeId uniquely identifies a set
+		return sets.FindOne(x => x.EpisodeId == episodeId);
+	}
+
 	public bool UpdateSet(SetModel set)
 	{
 		using var db = new LiteDatabase(_databasePath);
 
-		var sets = db.GetCollection<SetModel>("set");
+		var sets = db.GetCollection<SetModel>("sets");
 		return sets.Update(set);
 	}
 }
