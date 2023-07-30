@@ -1,6 +1,8 @@
-﻿@page "/words"
+﻿@page "/words/{episodeId:int}"
 
 @inject LiteDbDataAccess DataManager
+@inject OpenSubtitlesManager OpenSubtitlesManager
+@inject OpenAiManager OpenAiManager
 
 <h3>Words</h3>
 
@@ -33,10 +35,44 @@ else
 
 
 @code {
+
+	[Parameter]
+	public int EpisodeId { get; set; }	
+
 	public SetModel Set { get; set; }
 
-	protected override void OnInitialized()
+
+	protected async override Task OnParametersSetAsync()
 	{
-		Set = DataManager.GetAllSets().First();
+
+		if (EpisodeId == 0)
+		{
+			throw new Exception();
+		}
+
+		// check if a set with words is already created
+		// for this specific episode
+		Set = DataManager.GetSet(EpisodeId);
+
+		if (Set is not null) return;
+
+		// get subtitles
+		var subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+
+		// reformat subtitles
+		var lines = Helper.FormatSubtitles(subtitles);
+
+		// call chat
+		var words = await OpenAiManager.GetWords(lines);
+
+		// create set 
+		Set = new()
+		{
+			Words = words,
+			EpisodeId = EpisodeId
+		};
+
+		// save set to db
+		DataManager.CreateSet(Set);
 	}
 }
