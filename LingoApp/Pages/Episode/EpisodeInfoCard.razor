@@ -13,7 +13,8 @@
 		<ul class="list-group list-group-flush justify-content-end">
 			<li class="list-group-item">
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-					<button class="btn btn-primary" @onclick="ShowSubtitles">Words</button>
+					<button class="btn btn-primary" @onclick="ShowWords">Words</button>
+					<button class="btn btn-primary" @onclick="ShowSubtitles">Subtitles</button>
 				</div>
 			</li>
 		</ul>
@@ -27,5 +28,10 @@
 	private void ShowSubtitles()
 	{
 		NavigationManager.NavigateTo($"/subtitles/{Episode.Id}");
+	}
+
+	private void ShowWords()
+	{
+		NavigationManager.NavigateTo($"/words/{Episode.Id}");
 	}
 }
