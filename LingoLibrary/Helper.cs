@@ -58,8 +58,6 @@ public static class Helper
 		{
 			new ()
 			{
-				SerieId = 1,
-				SeasonId = 1,
 				EpisodeId = 1,
 				Words = new ()
 				{
@@ -70,8 +68,6 @@ public static class Helper
 			},
 			new ()
 			{
-				SerieId = 1,
-				SeasonId = 1,
 				EpisodeId = 2,
 				Words = new List<WordModel>
 				{
@@ -82,8 +78,6 @@ public static class Helper
 			},
 			new ()
 			{
-				SerieId = 2,
-				SeasonId = 1,
 				EpisodeId = 1,
 				Words = new List<WordModel>
 				{
