@@ -4,12 +4,15 @@
 @inject TmdbManager TmdbManager
 
 <div>
-	<nav class="navbar">
-		<div class="input-group mb-3">
-			<input @bind-value="SearchPhrase" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
-			<button class="btn btn-outline-success" @onclick="@(() => SearchSeries())">Search</button>
-		</div>
-	</nav>
+	<div class="col-lg-6 col-md-8">
+		<form @onsubmit="@SearchSeries">
+			<div class="input-group mb-3">
+				<input @bind-value="SearchPhrase" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success" type="submit">Search</button>
+			</div>
+		</form>
+	</div>
+
 	@foreach (var serie in Series)
 	{
 		<div @onclick="() => OnSerieSelection(serie)">
