@@ -47,7 +47,7 @@ else
 
 		if (EpisodeId == 0)
 		{
-			throw new Exception();
+			Debug.WriteLine("Invalid episodeId");
 		}
 
 		// check if a set with words is already created
@@ -58,6 +58,7 @@ else
 
 		// get subtitles
 		var subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+		Debug.WriteLine($"Got subtitles for {EpisodeId}");
 
 		// reformat subtitles
 		var lines = Helper.FormatSubtitles(subtitles);
