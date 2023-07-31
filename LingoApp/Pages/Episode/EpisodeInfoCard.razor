@@ -11,10 +11,18 @@
 			<p class="card-text overflow-auto">@Episode.Description</p>	
 		</div>
 		<ul class="list-group list-group-flush justify-content-end">
-			<li class="list-group-item">
+@*			<li class="list-group-item">
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-					<button class="btn btn-primary" @onclick="ShowWords">Words</button>
+					<button class="btn btn-primary btn-sm" @onclick="ShowWords">Words</button>
 					<button class="btn btn-primary" @onclick="ShowSubtitles">Subtitles</button>
+				</div>
+			</li>
+*@			<li class="list-group-item">
+				<div class="btn-toolbar justify-content-md-end">
+					<div class="btn-group btn-group-sm" role="group">
+						<button class="btn btn-outline-dark" @onclick="ShowWords">Words</button>
+						<button class="btn btn-outline-dark" @onclick="ShowSubtitles">Subtitles</button>
+					</div>
 				</div>
 			</li>
 		</ul>
