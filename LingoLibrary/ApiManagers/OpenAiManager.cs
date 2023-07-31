@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Diagnostics;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -22,8 +23,14 @@ public class OpenAiManager
 			+ "Verbs write with 'to' at front in bare impersonal form, add articles to countable nouns."
 			+ @"List them with their Polish translations in json format eg {""to scribble"": ""bazgrać"",...}.";
 
+		context =
+			"Find 10 most advanced english vocabulary in given text. You mustn't list words under C1 english level."
+			+ "Verbs write with 'to' at front in bare impersonal form, add articles 'a' or 'an' to countable nouns."
+			+ @"List them with their Polish translations in JSON format e.g. {""to scribble"": ""bazgrać"",...}.";
+
+
 		double maxWords = 2048 * 6.5 / 10 - context.Split().Length;
-		maxWords *= 0.5;  // Temp
+		maxWords *= 0.7;  // Temp
 
 		var prompts = GetPrompts(lines, maxWords);
 
@@ -36,6 +43,8 @@ public class OpenAiManager
 		//}
 
 		var tasks = prompts.Select(prompt => CallChatGpt(prompt, context));
+
+		Debug.WriteLine("Got Tasks.");
 
 		foreach (var task in tasks)
 		{
@@ -53,6 +62,7 @@ public class OpenAiManager
 		foreach (string line in lines)
 		{
 			counter += line.Split().Length;
+
 			if (counter >= maxWords)
 			{
 				yield return String.Join('.', text);
@@ -77,14 +87,14 @@ public class OpenAiManager
 
 		var payload = new
 		{
-			model = "gpt-3.5-turbo",
-			//model = "gpt-4",
+			//model = "gpt-3.5-turbo",
+			model = "gpt-4",
 			messages = new[]
 			{
 				new { role = "system", content = context },
 				new { role = "user", content = text },				
 			},
-			temperature = 0.2,
+			temperature = 0,
 			max_tokens=2048
 		};
 
@@ -102,7 +112,18 @@ public class OpenAiManager
 		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
 		string content = json.choices[0].message.content;
 
-		var words = JsonConvert.DeserializeObject<Dictionary<string, string>>(content.Replace("\\", ""));
+		// find only JSON part
+		// gpt may occasionaly add some additional info
+		// which may cause some errors
+		int start = content.IndexOf('{');
+		int end = content.LastIndexOf('}');
+		content = content.Substring(start, end - start + 1);
+
+		// Chat GPT adds '\' before double quotes
+		// e.g. { \"to walk\": \"chodzić\" }
+		content = content.Replace("\\", "");
+
+		var words = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
 
 		var output = words.Select(x => new WordModel { English = x.Key, Polish = x.Value }).ToList();
 
