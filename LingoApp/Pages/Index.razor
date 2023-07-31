@@ -4,27 +4,41 @@
 @inject TmdbManager TmdbManager
 
 <div>
-	<div class="col-lg-6 col-md-8">
-		<form @onsubmit="@SearchSeries">
-			<div class="input-group mb-3">
-				<input @bind-value="SearchPhrase" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+	<nav class="navbar navbar-expand-lg mb-2">
+		<div class="container-fluid">
+			<form class="d-flex" @onsubmit="@SearchSeries">
+				<input @bind-value="SearchPhrase" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
 				<button class="btn btn-outline-success" type="submit">Search</button>
-			</div>
-		</form>
-	</div>
-
-	@foreach (var serie in Series)
-	{
-		<div @onclick="() => OnSerieSelection(serie)">
-			<SerieInfoCard Serie=serie ShortDescription=true/>
+			</form>
 		</div>
+	</nav>
+
+	@if (_pageStatus == PageStatus.Loading)
+	{
+		<LoadingSpinner />
 	}
+	else if (_pageStatus == PageStatus.NoResultsFound)
+	{
+		<NoResultsAlert />
+	}
+	else if (_pageStatus == PageStatus.FoundResults)
+	{
+		@foreach (var serie in Series)
+		{
+			<div @onclick="() => OnSerieSelection(serie)">
+				<SerieInfoCard Serie=serie ShortDescription=true />
+			</div>
+		}
+	}
+
 </div>
 
 @code {
 	public List<SerieModel> Series { get; set; } = new();
 
 	public string SearchPhrase { get; set; }
+
+	public PageStatus _pageStatus = PageStatus.Basic;
 
 	private void OnSerieSelection(SerieModel serie)
 	{
@@ -33,7 +47,10 @@
 
 	private async Task SearchSeries()
 	{
-		Series = new();
+		_pageStatus = PageStatus.Loading;
+
 		Series = await TmdbManager.GetSeriesByName(SearchPhrase);
+
+		_pageStatus = (Series.Count > 0) ? PageStatus.FoundResults : PageStatus.NoResultsFound;
 	}
 }
