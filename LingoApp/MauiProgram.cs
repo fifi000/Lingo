@@ -32,7 +32,9 @@ public static class MauiProgram
 		builder.Services.AddScoped<OpenAiManager>();
 
 		// Database
+		builder.Services.AddScoped<LiteDbDataAccess>();
 		builder.Services.AddScoped<SetData>();
+		builder.Services.AddScoped<SerieSearchData>();
 
 		return builder.Build();
 	}
