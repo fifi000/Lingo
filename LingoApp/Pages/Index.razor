@@ -4,16 +4,7 @@
 @inject TmdbManager TmdbManager
 @inject SerieSearchData SerieSearchData
 
-<div class="container-fluid">
-	<nav class="navbar navbar-expand-lg mb-2 bg-light">
-		<div class="container-fluid">
-			<form class="d-flex" @onsubmit="@SearchSeries">
-				<input @bind-value="SearchPhrase" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-				<button class="btn btn-outline-success" type="submit">Search</button>
-			</form>
-		</div>
-	</nav>
-
+<div class="container-fluid py-2">
 	@if (_pageStatus == PageStatus.Loading)
 	{
 		<LoadingSpinner />
@@ -32,50 +23,53 @@
 		}
 	}
 
-	<div class="border rounded pt-3">
-		<h4 class="px-3">Last seen</h4>
-		<div class="d-flex overflow-auto px-3">
-			@foreach (var serie in SeriesSearched)
-			{
-				<div class="mx-1 col-6 col-sm-6 col-md-3 col-lg-2" @onclick="() => OnSerieSelection(serie)">
-					<img src="@serie.Cover" class="img-fluid rounded" alt="Cover">
-				</div>
-			}
+	@if (SeriesSearched?.Count > 0)
+	{
+		<div class="border rounded pt-3">
+			<h4 class="px-3">Last seen</h4>
+			<div class="d-flex overflow-auto px-3">
+				@foreach (var serie in SeriesSearched)
+				{
+					<div class="mx-1 col-6 col-sm-6 col-md-3 col-lg-2" @onclick="() => OnSerieSelection(serie)">
+						<img src="@serie.Cover" class="img-fluid rounded" alt="Cover">
+					</div>
+				}
+			</div>
 		</div>
-	</div>
-
+	}
 </div>
 
 @code {
+	[Parameter]
+	[SupplyParameterFromQuery]
+	public string SearchPhrase { get; set; }
+
 	public List<SerieModel> Series { get; set; } = new();
 	public List<SerieModel> SeriesSearched { get; set; } = new();
 
-	public string SearchPhrase { get; set; }
-
 	private PageStatus _pageStatus;
 
-	protected async override Task OnInitializedAsync()
+	protected async override Task OnParametersSetAsync()
 	{
-		var lastSearchedSerieIds = SerieSearchData.GetAllSearchedSeries(6);
-
-		if (lastSearchedSerieIds.Count == 0)
+		if (SearchPhrase is not null)
 		{
-			return;
+			await SearchSeries();
 		}
 
-		_pageStatus = PageStatus.Loading;
+		var lastSearchedSerieIds = SerieSearchData.GetAllSearchedSeries(6);
+		if (lastSearchedSerieIds.Count == 0) return;
+
 		SeriesSearched = new();
 
 		var tasks = lastSearchedSerieIds.Select(x => TmdbManager.GetSerieById(x));
 
 		SeriesSearched = (await Task.WhenAll(tasks)).ToList();
 
-		_pageStatus = PageStatus.Basic;
+		if (SearchPhrase is null) _pageStatus = PageStatus.Basic;
 	}
 
 	private void OnSerieSelection(SerieModel serie)
 	{
-		// save to db and show on BASIC status
 		SerieSearchData.UpsertSerie(serie.Id);
 
 		NavigationManager.NavigateTo($"/serie/{serie.Id}");
