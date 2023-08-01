@@ -1,6 +1,6 @@
 ﻿@page "/words/{episodeId:int}"
 
-@inject LiteDbDataAccess DataManager
+@inject SetData SetData
 @inject OpenSubtitlesManager OpenSubtitlesManager
 @inject OpenAiManager OpenAiManager
 
@@ -52,7 +52,7 @@ else
 
 		// check if a set with words is already created
 		// for this specific episode
-		Set = DataManager.GetSet(EpisodeId);
+		Set = SetData.GetSet(EpisodeId);
 
 		if (Set is not null) return;
 
@@ -74,6 +74,6 @@ else
 		};
 
 		// save set to db
-		DataManager.CreateSet(Set);
+		SetData.CreateSet(Set);
 	}
 }

@@ -23,12 +23,16 @@ public static class MauiProgram
 	builder.Services.AddBlazorWebViewDeveloperTools();
 	builder.Logging.AddDebug();
 #endif
+		// App Settings
 		builder.Configuration.AddUserSecrets("088c9a1e-5a94-4e3f-9824-9ba0213dba14");
 
+		// APIs
 		builder.Services.AddSingleton<TmdbManager>();
 		builder.Services.AddSingleton<OpenSubtitlesManager>();
-		builder.Services.AddScoped<LiteDbDataAccess>();
 		builder.Services.AddScoped<OpenAiManager>();
+
+		// Database
+		builder.Services.AddScoped<SetData>();
 
 		return builder.Build();
 	}

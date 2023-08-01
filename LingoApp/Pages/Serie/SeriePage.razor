@@ -1,7 +1,7 @@
 ﻿@page "/serie/{serieId:int}"
 
 @inject TmdbManager TmdbManager
-@inject LiteDbDataAccess DataManager
+@inject SetData SetData
 
 <div>
 
@@ -54,7 +54,7 @@
 		Serie = await TmdbManager.GetSerieById(SerieId);
 		_currentSeason = Serie.Seasons.First().Number;
 
-		_episodeIdsWithSubtitles = DataManager.GetAllSets().Select(x => x.EpisodeId).ToList();
+		_episodeIdsWithSubtitles = SetData.GetAllSets().Select(x => x.EpisodeId).ToList();
 	}
 
 }
