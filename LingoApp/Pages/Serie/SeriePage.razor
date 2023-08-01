@@ -31,7 +31,7 @@
 				<div class="row row-cols-1 g-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
 					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
 					{
-						<EpisodeInfoCard Episode="episode" HasSubtitles="_episodeIdsWithSubtitles.Contains(episode.Id)"/>
+						<EpisodeInfoCard Episode="episode" HasWords="_episodeIdsWithSubtitles.Contains(episode.Id)" />
 					}
 				</div>
 			</div>
