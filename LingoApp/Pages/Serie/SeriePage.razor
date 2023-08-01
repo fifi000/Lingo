@@ -1,6 +1,7 @@
 ﻿@page "/serie/{serieId:int}"
 
 @inject TmdbManager TmdbManager
+@inject LiteDbDataAccess DataManager
 
 <div>
 
@@ -30,7 +31,7 @@
 				<div class="row row-cols-1 g-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
 					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
 					{
-						<EpisodeInfoCard Episode="episode"/>
+						<EpisodeInfoCard Episode="episode" HasSubtitles="_episodeIdsWithSubtitles.Contains(episode.Id)"/>
 					}
 				</div>
 			</div>
@@ -46,11 +47,14 @@
 	public SerieModel Serie { get; set; }
 
 	private int _currentSeason;
+	private List<int> _episodeIdsWithSubtitles;
 
 	protected async override Task OnInitializedAsync()
 	{
 		Serie = await TmdbManager.GetSerieById(SerieId);
 		_currentSeason = Serie.Seasons.First().Number;
+
+		_episodeIdsWithSubtitles = DataManager.GetAllSets().Select(x => x.EpisodeId).ToList();
 	}
 
 }
