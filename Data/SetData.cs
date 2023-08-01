@@ -9,7 +9,7 @@ namespace Data;
 public class SetData
 {
 	private readonly LiteDbDataAccess _dataAccess;
-
+	private const string CollectionName = "sets";
 	public SetData(LiteDbDataAccess dataAccess)
     {
 		_dataAccess = dataAccess;
@@ -19,7 +19,7 @@ public class SetData
 	{
 		using var db = _dataAccess.GetDatabase();
 
-		var sets = db.GetCollection<SetModel>("sets");
+		var sets = db.GetCollection<SetModel>(CollectionName);
 		sets.Insert(set);
 	}
 
@@ -27,7 +27,7 @@ public class SetData
 	{
 		using var db = _dataAccess.GetDatabase();
 
-		var sets = db.GetCollection<SetModel>("sets");
+		var sets = db.GetCollection<SetModel>(CollectionName);
 		return sets.FindAll().ToList();
 	}
 
@@ -35,7 +35,7 @@ public class SetData
 	{
 		using var db = _dataAccess.GetDatabase();
 
-		var sets = db.GetCollection<SetModel>("sets");
+		var sets = db.GetCollection<SetModel>(CollectionName);
 
 		return sets.FindOne(x => x.EpisodeId == episodeId);
 	}
@@ -44,7 +44,7 @@ public class SetData
 	{
 		using var db = _dataAccess.GetDatabase();
 
-		var sets = db.GetCollection<SetModel>("sets");
+		var sets = db.GetCollection<SetModel>(CollectionName);
 		return sets.Update(set);
 	}
 
@@ -52,7 +52,7 @@ public class SetData
 	{
 		using var db = _dataAccess.GetDatabase();
 
-		var sets = db.GetCollection<SetModel>("sets");
+		var sets = db.GetCollection<SetModel>(CollectionName);
 
 		var set = sets.FindOne(x => x.EpisodeId == episodeId);
 
