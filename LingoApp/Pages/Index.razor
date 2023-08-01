@@ -4,7 +4,7 @@
 @inject TmdbManager TmdbManager
 @inject SerieSearchData SerieSearchData
 
-<div class="container-fluid py-2">
+<div class="container-fluid py-4">
 	@if (_pageStatus == PageStatus.Loading)
 	{
 		<LoadingSpinner />
@@ -15,12 +15,14 @@
 	}
 	else if (_pageStatus == PageStatus.FoundResults)
 	{
-		@foreach (var serie in Series)
-		{
-			<div @onclick="() => OnSerieSelection(serie)">
-				<SerieInfoCard Serie=serie ShortDescription=true />
-			</div>
-		}
+		<div class="container">
+			@foreach (var serie in Series)
+			{
+				<div class="mb-3 col-12 container" @onclick="() => OnSerieSelection(serie)">
+					<SerieInfoCard Serie=serie ShortDescription=true />
+				</div>
+			}
+		</div>
 	}
 
 	@if (SeriesSearched?.Count > 0)
