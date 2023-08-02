@@ -15,24 +15,34 @@
 	}
 	else if (_pageStatus == PageStatus.FoundResults)
 	{
-		<div class="container">
+@*		<div class="d-flex flex-column">
 			@foreach (var serie in Series)
 			{
-				<div class="mb-3 col-12 container" @onclick="() => OnSerieSelection(serie)">
+				<div class="mb-3" @onclick="() => OnSerieSelection(serie)">
 					<SerieInfoCard Serie=serie ShortDescription=true />
 				</div>
 			}
+		</div>*@
+		<div class="container-lg-fluid my-4">
+			<div class="row row-cols-1 g-4 row-cols-xl-2 row-cols-md-1 row-cols-sm-1">
+				@foreach (var serie in Series)
+				{
+					<div class="mb-3" @onclick="() => OnSerieSelection(serie)">
+						<SerieInfoCard Serie=serie/>
+					</div>
+				}
+			</div>
 		</div>
 	}
 
 	@if (SeriesSearched?.Count > 0)
 	{
-		<div class="border rounded pt-3">
-			<h4 class="px-3">Last seen</h4>
+		<div class="container-fluid border rounded pt-3 px-0">
+			<h3 class="px-3 mb-3">Last searched</h3>
 			<div class="d-flex overflow-auto px-3">
 				@foreach (var serie in SeriesSearched)
 				{
-					<div class="mx-1 col-6 col-sm-6 col-md-3 col-lg-2" @onclick="() => OnSerieSelection(serie)">
+					<div class="mb-2 mx-2 col-4 col-sm-3 col-md-3 col-lg-2 border rounded" @onclick="() => OnSerieSelection(serie)">
 						<img src="@serie.Cover" class="img-fluid rounded" alt="Cover">
 					</div>
 				}
