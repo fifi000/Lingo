@@ -1,21 +1,13 @@
-﻿
-<div class="card">
+﻿<div class="card h-100">
 	<div class="row g-0">
-		<div class="col-2 border-end p-0 col-xl-3 col-lg-1">
+		<div class="col-2 col-xl-3 border-end p-0">
 			<img src="@Serie.Cover" class="img-fluid rounded-start" alt="Cover">
 		</div>
-		<div class="col-10 col-xl-9 ">
+		<div class="col-10 col-xl-9">
 			<div class="card-body">
 				<h5 class="card-title">@Serie.Name</h5>
 				<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
-				@if (ShortDescription)
-				{
-					<p class="card-text">@TextShortener(Serie.Description, 200)</p>
-				}				
-				else
-				{
-					<p class="card-text">@Serie.Description</p>
-				}
+				<p class="card-text">@Serie.Description</p>
 			</div>
 		</div>
 	</div>
@@ -25,17 +17,4 @@
 @code {
 	[Parameter]
 	public SerieModel Serie { get; set; }
-
-	[Parameter]
-	public bool ShortDescription { get; set; } = false;
-
-	private string TextShortener(string text, int maxChars)
-	{
-		if (text.Length > maxChars)
-		{
-			return $"{text.Substring(0, maxChars)}...";
-		}
-
-		return text;
-	}
 }
