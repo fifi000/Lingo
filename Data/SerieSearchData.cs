@@ -45,4 +45,13 @@ public class SerieSearchData
 		UpsertSerie(serieId, DateTime.UtcNow);
 	}
 
+	public void DeleteSerie(int serieId)
+	{
+		using var db = _dataAccess.GetDatabase();
+
+		var sets = db.GetCollection<SerieSearchModel>(CollectionName);
+
+		sets.Delete(serieId);
+	}
+
 }
