@@ -1,0 +1,26 @@
+﻿
+<div class="mb-2 mx-2 col-4 col-sm-3 col-md-3 col-lg-2 border rounded position-relative"
+	 @onmouseover="() => _showClose = true" @onmouseleave="() => _showClose = false">
+	<img src="@Serie.Cover" class="img-fluid rounded" alt="Cover" 
+		 @onclick="() => OnSerieSelection(Serie)">
+	@if (_showClose)
+	{
+		<button class="btn-outline-dark border-0 rounded-circle opacity-75 position-absolute top-0 end-0"
+				aria-label="Close" @onclick="() => OnSerieRemove(Serie)" type="button">
+			<span class="oi oi-x"></span>
+		</button>
+	}
+</div>
+
+@code {
+	[Parameter]
+	public SerieModel Serie { get; set; }
+
+	[Parameter]
+	public Action<SerieModel> OnSerieSelection { get; set; }
+
+	[Parameter]
+	public Action<SerieModel> OnSerieRemove { get; set; }
+
+	private bool _showClose = false;
+}
