@@ -1,9 +1,10 @@
-﻿<div class="card h-100">
+﻿
+<div class="card h-100">
 	<div class="row g-0">
-		<div class="col-2 col-xl-3 border-end p-0">
+		<div class="col-2 border-end p-0 @_largeColumnsImage">
 			<img src="@Serie.Cover" class="img-fluid rounded-start" alt="Cover">
 		</div>
-		<div class="col-10 col-xl-9">
+		<div class="col-10 @_largeColumnsBody">
 			<div class="card-body">
 				<h5 class="card-title">@Serie.Name</h5>
 				<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
@@ -13,8 +14,13 @@
 	</div>
 </div>
 
-
 @code {
 	[Parameter]
 	public SerieModel Serie { get; set; }
+
+	[Parameter]
+	public bool FullSeriePage { get; set; }
+
+	private string _largeColumnsImage => FullSeriePage ? null : "col-xl-3";
+	private string _largeColumnsBody => FullSeriePage ? null : "col-xl-9";
 }
