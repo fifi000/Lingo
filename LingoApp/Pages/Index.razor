@@ -79,8 +79,10 @@
 
 	private void RemoveSearchedSerie(SerieModel serie)
 	{
-		SeriesSearched.Remove(serie);
-		SerieSearchData.DeleteSerie(serie.Id);
+		if (SeriesSearched.Remove(serie))
+		{			
+			SerieSearchData.DeleteSerie(serie.Id);
+		}
 	}
 
 	private async Task SearchSeries()
