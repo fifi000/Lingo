@@ -1,18 +1,47 @@
 ﻿
-<div class="card h-100">
-	<div class="row g-0">
-		<div class="col-2 border-end p-0 @_largeColumnsImage">
-			<img src="@Serie.Cover" class="img-fluid rounded-start" alt="Cover">
-		</div>
-		<div class="col-10 @_largeColumnsBody">
-			<div class="card-body">
-				<h5 class="card-title">@Serie.Name</h5>
-				<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
-				<p class="card-text">@Serie.Description</p>
+@if (FullSeriePage)
+{
+	<div class="card">
+		<div class="row g-0">
+			<div class="col-2 border-end p-0">
+				<img src="@Serie.Cover" class="img-fluid rounded-start" alt="Cover">
+			</div>
+			<div class="col-10">
+				<div class="card-body">
+					<h5 class="card-title">@Serie.Name</h5>
+					<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
+					<p class="card-text">@Serie.Description</p>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+}
+else
+{
+	<div class="col" @onclick="HandleOnSerieSelection">
+		@if (Serie.Cover is not null)
+		{
+			<div class="rounded" style="@(_isHighlighted ? "" : "padding: .05rem")">
+				<div class="rounded @(_isHighlighted ? "shadow" : "border")" @onmouseover="() => _isHighlighted = true" @onmouseleave="() => _isHighlighted = false">
+					<img src="@Serie.Cover" class="img-fluid rounded" alt="Cover">
+				</div>
+			</div>
+
+		}
+		else
+		{
+			<div class="card h-100">
+				<div class="card-body">
+					<h5 class="card-title">@Serie.Name</h5>
+					<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
+					<p class="card-text">@Serie.Description</p>
+				</div>
+			</div>
+		}
+	</div>
+}
+
+
 
 @code {
 	[Parameter]
@@ -21,6 +50,13 @@
 	[Parameter]
 	public bool FullSeriePage { get; set; }
 
-	private string _largeColumnsImage => FullSeriePage ? null : "col-xl-3";
-	private string _largeColumnsBody => FullSeriePage ? null : "col-xl-9";
+	[Parameter]
+	public EventCallback<SerieModel> OnSerieSelection { get; set; }
+
+	private bool _isHighlighted = false;
+
+	private async Task HandleOnSerieSelection()
+	{
+		await OnSerieSelection.InvokeAsync(Serie);
+	}
 }

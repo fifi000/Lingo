@@ -16,12 +16,10 @@
 	else if (_pageStatus == PageStatus.FoundResults)
 	{
 		<div class="container-lg-fluid my-4">
-			<div class="row row-cols-1 g-4 row-cols-xl-2 row-cols-md-1 row-cols-sm-1">
-				@foreach (var serie in Series)
+			<div class="row g-3 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3 row-cols-2">
+				@foreach (var serie in Series.Where(x => x.Cover is not null))
 				{
-					<div class="mb-3" @onclick="() => OnSerieSelection(serie)">
-						<SerieInfoCard Serie=serie/>
-					</div>
+					<SerieInfoCard Serie=serie OnSerieSelection="OnSerieSelection" />
 				}
 			</div>
 		</div>
