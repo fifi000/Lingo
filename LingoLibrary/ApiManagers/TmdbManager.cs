@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -45,7 +47,12 @@ public class TmdbManager
 				model.Id = result.id;
 				model.Name = result.name;
 				model.Description = result.overview;
-				model.Cover = $"{_imageBaseUrl}{result?.poster_path}";
+				
+				string cover = result.poster_path;
+				if (String.IsNullOrEmpty(cover) == false)
+				{
+					model.Cover = $"{_imageBaseUrl}{cover}";
+				}
 				model.ReleaseDate = result.first_air_date;
 			}
 			catch 
@@ -83,7 +90,10 @@ public class TmdbManager
 		output.Name = json.name;
 		output.Description = json.overview;
 		output.ReleaseDate = json.first_air_date;
-		output.Cover = $"https://image.tmdb.org/t/p/w500/{json.poster_path}";
+
+		if (json.poster_path is not null)
+			output.Cover = $"{_imageBaseUrl}{json.poster_path}";
+		//output.Cover = $"https://image.tmdb.org/t/p/w500/{json.poster_path}";
 
 		output.Seasons = new();
 
