@@ -1,0 +1,38 @@
+﻿
+<div class="col" @onclick="HandleOnSerieSelection">
+	@if (Serie.Cover is not null)
+	{
+		<div class="rounded @(_isHighlighted ? "shadow" : "border")" style="@(_isHighlighted ? "" : "opacity: .925")"
+			@onmouseover="() => _isHighlighted = true" @onmouseleave="() => _isHighlighted = false">
+			<img src="@Serie.Cover" class="img-fluid rounded" alt="Cover">
+		</div>
+	}
+	else
+	{
+		<div class="card h-100">
+			<div class="card-body">
+				<h5 class="card-title">@Serie.Name</h5>
+				<p class="card-text"><small class="text-muted">@Serie.ReleaseDate</small></p>
+				<p class="card-text">@Serie.Description</p>
+			</div>
+		</div>
+	}
+</div>
+
+
+
+
+@code {
+	[Parameter]
+	public SerieModel Serie { get; set; }
+
+	[Parameter]
+	public EventCallback<SerieModel> OnSerieSelection { get; set; }
+
+	private bool _isHighlighted = false;
+
+	private async Task HandleOnSerieSelection()
+	{
+		await OnSerieSelection.InvokeAsync(Serie);
+	}
+}
