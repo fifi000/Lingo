@@ -25,6 +25,13 @@ else
 
 	protected async override Task OnInitializedAsync()
 	{
-		_subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+		try
+		{
+			_subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+		}
+		catch (Exception)
+		{
+			_subtitles = "Could not find subtitles";
+		}
 	}
 }

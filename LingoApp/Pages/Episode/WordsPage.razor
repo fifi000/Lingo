@@ -6,11 +6,15 @@
 
 <h3>Words</h3>
 
-@if (Set is null)
+@if (_pageStatus == PageStatus.Loading)
 {
 	<LoadingSpinner />
 }
-else
+else if (_pageStatus == PageStatus.NoResultsFound)
+{
+	<NoResultsAlert />
+}
+else if (_pageStatus == PageStatus.FoundResults)
 {
 	<table class="table table-hover">
 		<thead>
@@ -41,9 +45,11 @@ else
 
 	public SetModel Set { get; set; }
 
+	private PageStatus _pageStatus;
 
 	protected async override Task OnParametersSetAsync()
 	{
+		_pageStatus = PageStatus.Loading;
 
 		if (EpisodeId == 0)
 		{
@@ -54,26 +60,37 @@ else
 		// for this specific episode
 		Set = SetData.GetSet(EpisodeId);
 
-		if (Set is not null) return;
-
-		// get subtitles
-		var subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
-		Debug.WriteLine($"Got subtitles for {EpisodeId}");
-
-		// reformat subtitles
-		var lines = Helper.FormatSubtitles(subtitles);
-
-		// call chat
-		var words = await OpenAiManager.GetWords(lines);
-
-		// create set 
-		Set = new()
+		if (Set is not null)
 		{
-			Words = words,
-			EpisodeId = EpisodeId
-		};
+			_pageStatus = PageStatus.FoundResults;
+			return;
+		}
 
-		// save set to db
-		SetData.CreateSet(Set);
+		try
+		{
+			// get subtitles
+			var subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
+
+			// reformat subtitles
+			var lines = Helper.FormatSubtitles(subtitles);
+
+			// call chat
+			var words = await OpenAiManager.GetWords(lines);
+
+			// create set
+			Set = new()
+			{
+				Words = words,
+				EpisodeId = EpisodeId
+			};
+
+			// save set to db
+			SetData.CreateSet(Set);
+		}
+		catch (Exception)
+		{
+			_pageStatus = PageStatus.NoResultsFound;
+			return;
+		}
 	}
 }
