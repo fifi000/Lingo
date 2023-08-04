@@ -18,7 +18,7 @@
 		<div class="container-lg-fluid my-4 border-top">
 			<h2 class="my-3">Results</h2>
 			<div class="row g-3 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3 row-cols-2">
-				@foreach (var serie in Series.Where(x => x.Cover is not null))
+				@foreach (var serie in Series)
 				{
 					<SearchSerie Serie=serie OnSerieSelection="OnSerieSelection" />
 				}

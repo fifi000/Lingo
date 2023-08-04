@@ -44,18 +44,16 @@ public class TmdbManager
 
 			try
 			{
+				string cover = result.poster_path;
+				if (String.IsNullOrEmpty(cover)) continue;
+				model.Cover = $"{_imageBaseUrl}{cover}";
+
 				model.Id = result.id;
 				model.Name = result.name;
-				model.Description = result.overview;
-				
-				string cover = result.poster_path;
-				if (String.IsNullOrEmpty(cover) == false)
-				{
-					model.Cover = $"{_imageBaseUrl}{cover}";
-				}
+				model.Description = result.overview;		
 				model.ReleaseDate = result.first_air_date;
 			}
-			catch 
+			catch
 			{
 				continue;
 			}
@@ -93,7 +91,6 @@ public class TmdbManager
 
 		if (json.poster_path is not null)
 			output.Cover = $"{_imageBaseUrl}{json.poster_path}";
-		//output.Cover = $"https://image.tmdb.org/t/p/w500/{json.poster_path}";
 
 		output.Seasons = new();
 
