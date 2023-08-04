@@ -4,7 +4,7 @@
 @inject TmdbManager TmdbManager
 @inject SerieSearchData SerieSearchData
 
-<div class="container-fluid py-4">
+<div class="container-fluid pb-4">
 	@if (_pageStatus == PageStatus.Loading)
 	{
 		<LoadingSpinner />
@@ -15,11 +15,12 @@
 	}
 	else if (_pageStatus == PageStatus.FoundResults)
 	{
-		<div class="container-lg-fluid my-4">
+		<div class="container-lg-fluid my-4 border-top">
+			<h2 class="my-3">Results</h2>
 			<div class="row g-3 row-cols-xxl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3 row-cols-2">
 				@foreach (var serie in Series.Where(x => x.Cover is not null))
 				{
-					<SerieInfoCard Serie=serie OnSerieSelection="OnSerieSelection" />
+					<SearchSerie Serie=serie OnSerieSelection="OnSerieSelection" />
 				}
 			</div>
 		</div>
@@ -27,9 +28,9 @@
 
 	@if (SeriesSearched?.Count > 0)
 	{
-		<div class="container-fluid border rounded pt-3 px-0">
-			<h3 class="px-3 mb-3">Last searched</h3>
-			<div class="d-flex overflow-auto px-3">
+		<div class="container-lg-fluid border-top">
+			<h2 class="my-3">Last searched</h2>
+			<div class="d-flex overflow-hidden">
 				@foreach (var serie in SeriesSearched)
 				{
 					<LastSearchedSerie Serie="serie" OnSerieSelection="OnSerieSelection" OnSerieRemove="RemoveSearchedSerie" />
@@ -56,7 +57,7 @@
 			await SearchSeries();
 		}
 
-		var lastSearchedSerieIds = SerieSearchData.GetAllSearchedSeries(8);
+		var lastSearchedSerieIds = SerieSearchData.GetAllSearchedSeries(10);
 		if (lastSearchedSerieIds.Count == 0) return;
 
 		SeriesSearched = new();
