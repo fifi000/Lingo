@@ -30,7 +30,7 @@
 	{
 		<div class="container-lg-fluid border-top">
 			<h2 class="my-3">Last searched</h2>
-			<div class="d-flex overflow-hidden">
+			<div class="d-flex overflow-auto">
 				@foreach (var serie in SeriesSearched)
 				{
 					<LastSearchedSerie Serie="serie" OnSerieSelection="OnSerieSelection" OnSerieRemove="RemoveSearchedSerie" />
