@@ -24,7 +24,12 @@ public static class MauiProgram
 	builder.Logging.AddDebug();
 #endif
 		// App Settings
+		var exec = System.Reflection.Assembly.GetExecutingAssembly().Location;
+		var path = System.IO.Path.GetDirectoryName(exec);
+		AppDomain.CurrentDomain.SetData("DataDirectory", path);
+
 		builder.Configuration.AddUserSecrets("088c9a1e-5a94-4e3f-9824-9ba0213dba14");
+		builder.Configuration.AddJsonFile("appsettings.json");
 
 		// APIs
 		builder.Services.AddSingleton<TmdbManager>();
