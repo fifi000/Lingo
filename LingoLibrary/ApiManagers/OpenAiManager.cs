@@ -10,6 +10,8 @@ public class OpenAiManager
 {
 	private readonly string _apiKey;
 	private readonly string _baseUrl = "https://api.openai.com/v1/";
+	private readonly string _model = "gpt-3.5-turbo";
+	//private readonly string _model = "gpt-4";
 
 	public OpenAiManager(IConfiguration configuration)
     {
@@ -19,32 +21,18 @@ public class OpenAiManager
 	public async Task<List<WordModel>> GetWords(List<string> lines)
 	{
 		string context =
-			"You will be provided with TV Show script, and your task is to extract a list of smart/ advanced words and phrases from it."
-			+ "Verbs write with 'to' at front in bare impersonal form, add articles to countable nouns."
-			+ @"List them with their Polish translations in json format eg {""to scribble"": ""bazgrać"",...}.";
-
-		context =
 			"Find 10 most advanced english vocabulary in given text. You mustn't list words under C1 english level."
 			+ "Verbs write with 'to' at front in bare impersonal form, add articles 'a' or 'an' to countable nouns."
 			+ @"List them with their Polish translations in JSON format e.g. {""to scribble"": ""bazgrać"",...}.";
 
-
-		double maxWords = 2048 * 6.5 / 10 - context.Split().Length;
-		maxWords *= 0.7;  // Temp
+		// k reduces max number of words for a prompt 
+		// since it is estimated and not precisely calculated
+		double k = 0.7;
+		double maxWords = (2048 * 6.5 / 10 - context.Split().Length) * k;
 
 		var prompts = GetPrompts(lines, maxWords);
-
 		var words = new List<WordModel>();
-		//var tasks = new List<Task<List<WordModel>>>();
-
-		//foreach (var prompt in prompts)
-		//{
-		//	tasks.Add(CallChatGpt(prompt, context));
-		//}
-
 		var tasks = prompts.Select(prompt => CallChatGpt(prompt, context));
-
-		Debug.WriteLine("Got Tasks.");
 
 		foreach (var task in tasks)
 		{
@@ -54,7 +42,7 @@ public class OpenAiManager
 		return words;
 	}
 
-	private IEnumerable<string> GetPrompts(List<string> lines, double maxWords)
+	private static IEnumerable<string> GetPrompts(List<string> lines, double maxWords)
 	{
 		List<string> text = new();
 		int counter = 0;
@@ -87,8 +75,7 @@ public class OpenAiManager
 
 		var payload = new
 		{
-			//model = "gpt-3.5-turbo",
-			model = "gpt-4",
+			model = _model,
 			messages = new[]
 			{
 				new { role = "system", content = context },
@@ -125,7 +112,9 @@ public class OpenAiManager
 
 		var words = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
 
-		var output = words.Select(x => new WordModel { English = x.Key, Polish = x.Value }).ToList();
+		var output = words
+			.Select(x => new WordModel { Original = x.Key, Translation = x.Value })
+			.ToList();
 
 		return output;
 	}
