@@ -2,6 +2,6 @@
 
 public class WordModel
 {
-    public string English { get; set; }
-    public string Polish { get; set; }
+    public string Original { get; set; }
+    public string Translation { get; set; }
 }
