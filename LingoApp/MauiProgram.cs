@@ -28,8 +28,11 @@ public static class MauiProgram
 		var path = System.IO.Path.GetDirectoryName(exec);
 		AppDomain.CurrentDomain.SetData("DataDirectory", path);
 
-		builder.Configuration.AddUserSecrets("088c9a1e-5a94-4e3f-9824-9ba0213dba14");
-		builder.Configuration.AddJsonFile("appsettings.json");
+		//builder.Configuration.AddJsonFile("appsettings.json");
+		var a = System.Reflection.Assembly.GetExecutingAssembly();
+		using var stream = a.GetManifestResourceStream("LingoApp.appsettings.json");
+		var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
+		builder.Configuration.AddConfiguration(config);
 
 		// APIs
 		builder.Services.AddSingleton<TmdbManager>();
