@@ -19,7 +19,7 @@
 			<div class="pagination d-flex flex-wrap justify-content-center p-2">
 				@foreach (var season in Serie.Seasons)
 				{
-					<div class="page-item @((_currentSeason == season.Number) ? "active" : "")" @onclick="() => _currentSeason = season.Number">
+					<div class="page-item @((_currentSeasonNumber == season.Number) ? "active" : "")" @onclick="() => _currentSeasonNumber = season.Number">
 						<a class="page-link user-select-none">@season.Number</a>
 					</div>
 				}
@@ -29,9 +29,17 @@
 		<div>
 			<div class="container-lg-fluid mb-4">
 				<div class="row row-cols-1 g-4 row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-					@foreach (var episode in Serie.Seasons.First(x => x.Number == _currentSeason).Episodes)
+					@*@if (_currentSeason is not null && _currentSeason is not null)*@
+					@if (_currentSeason?.Episodes is not null)
 					{
-						<EpisodeInfoCard Episode="episode" HasWords="_episodeIdsWithSubtitles.Contains(episode.Id)" />
+						@foreach (var episode in _currentSeason.Episodes)
+						{
+							<EpisodeInfoCard Episode="episode" HasWords="_episodeIdsWithSubtitles.Contains(episode.Id)" />
+						}
+					}
+					else
+					{
+						<LoadingSpinner />
 					}
 				</div>
 			</div>
@@ -46,15 +54,23 @@
 
 	public SerieModel Serie { get; set; }
 
-	private int _currentSeason;
+	private SeasonModel _currentSeason => Serie.Seasons.FirstOrDefault(x => x.Number == _currentSeasonNumber);
+	private int _currentSeasonNumber;
 	private List<int> _episodeIdsWithSubtitles;
 
 	protected async override Task OnInitializedAsync()
 	{
-		Serie = await TmdbManager.GetSerieById(SerieId);
-		_currentSeason = Serie.Seasons.First().Number;
+		Serie = await TmdbManager.GetSerieByIdAsync(SerieId);
+		_currentSeasonNumber = Serie.Seasons.First().Number;
+		
+		var tasks = Serie.Seasons.Select(x => LoadEpisodesAsync(x));
+		await Task.WhenAll(tasks);
 
 		_episodeIdsWithSubtitles = SetData.GetAllSets().Select(x => x.EpisodeId).ToList();
 	}
 
+	private async Task LoadEpisodesAsync(SeasonModel season)
+	{
+		season.Episodes = await TmdbManager.GetEpisodesAsync(Serie.Id, season.Number);
+	}
 }

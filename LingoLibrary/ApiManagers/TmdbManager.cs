@@ -18,7 +18,7 @@ public class TmdbManager
 		_token = configuration["Api:tmdb_token"];
 	}
 
-	public async Task<List<SerieModel>> GetSeriesByName(string serieName)
+	public async Task<List<SerieModel>> GetSeriesByNameAsync(string serieName)
 	{
 		var options = new RestClientOptions($"{_baseUrl}/search/tv?query={serieName}");
 		var client = new RestClient(options);
@@ -64,7 +64,7 @@ public class TmdbManager
 		return output;
 	}
 	
-	public async Task<SerieModel> GetSerieById(int id)
+	public async Task<SerieModel> GetSerieByIdAsync(int id)
 	{		
 		var options = new RestClientOptions($"{_baseUrl}/tv/{id}");
 		var client = new RestClient(options);
@@ -100,7 +100,6 @@ public class TmdbManager
 
 			model.Id = season.id;
 			model.Number = season.season_number;
-			model.Episodes = await GetEpisodes(output.Id, model.Number);
 			output.Seasons.Add(model);
 		}
 
@@ -110,7 +109,7 @@ public class TmdbManager
 		return output;
 	}
 
-	public async Task<List<EpisodeModel>> GetEpisodes(int serieId, int seasonNumber)
+	public async Task<List<EpisodeModel>> GetEpisodesAsync(int serieId, int seasonNumber)
 	{
 		var options = new RestClientOptions($"{_baseUrl}/tv/{serieId}/season/{seasonNumber}");
 		var client = new RestClient(options);

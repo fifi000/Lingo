@@ -62,7 +62,7 @@
 
 		SeriesSearched = new();
 
-		var tasks = lastSearchedSerieIds.Select(x => TmdbManager.GetSerieById(x));
+		var tasks = lastSearchedSerieIds.Select(x => TmdbManager.GetSerieByIdAsync(x));
 
 		SeriesSearched = (await Task.WhenAll(tasks)).ToList();
 
@@ -88,7 +88,7 @@
 	{
 		_pageStatus = PageStatus.Loading;
 
-		Series = await TmdbManager.GetSeriesByName(SearchPhrase);
+		Series = await TmdbManager.GetSeriesByNameAsync(SearchPhrase);
 
 		_pageStatus = (Series.Count > 0) ? PageStatus.FoundResults : PageStatus.NoResultsFound;
 	}
