@@ -1,5 +1,14 @@
 ﻿@inject NavigationManager NavigationManager
 
+<style>
+	p.desc-short {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>
+
 <div class="col">
 	<div class="card h-100">
 		<img src="@Episode.Cover" class="img-fluid rounded-top" alt="Cover">
@@ -8,7 +17,7 @@
 			<p class="card-text">
 				<small class="text-muted">@($"E{Episode.Number.ToString("D2")}")</small>
 			</p>
-			<p class="card-text overflow-auto">@Episode.Description</p>
+			<p class="@(_shortDescription ? "desc-short" : "")" @onclick="() => _shortDescription = !_shortDescription">@Episode.Description</p>
 		</div>
 		<div class="card-footer bg-transparent">
 			<div class="btn-toolbar justify-content-md-end">
@@ -29,6 +38,8 @@
 
 	[Parameter]
 	public bool HasWords { get; set; }
+
+	private bool _shortDescription = true;
 
 	private void ShowSubtitles()
 	{
