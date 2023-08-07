@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Diagnostics;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -14,7 +13,7 @@ public class OpenAiManager
 	//private readonly string _model = "gpt-4";
 
 	public OpenAiManager(IConfiguration configuration)
-    {
+	{
 		_apiKey = configuration["Api:open_ai_api_key"];
 	}
 
@@ -79,14 +78,14 @@ public class OpenAiManager
 			messages = new[]
 			{
 				new { role = "system", content = context },
-				new { role = "user", content = text },				
+				new { role = "user", content = text },
 			},
 			temperature = 0,
-			max_tokens=2048
+			max_tokens = 2048
 		};
 
 		var temp = JsonConvert.SerializeObject(payload);
-		
+
 		request.AddJsonBody(temp);
 
 		var response = await client.ExecutePostAsync(request);

@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace LingoLibrary.ApiManagers;
 
@@ -14,7 +12,7 @@ public class TmdbManager
 	private readonly string _imageBaseUrl = "https://image.tmdb.org/t/p/w500/";
 
 	public TmdbManager(IConfiguration configuration)
-    {
+	{
 		_token = configuration["Api:tmdb_token"];
 	}
 
@@ -23,19 +21,19 @@ public class TmdbManager
 		var options = new RestClientOptions($"{_baseUrl}/search/tv?query={serieName}");
 		var client = new RestClient(options);
 		var request = new RestRequest();
-		
-		request.AddHeader("Accept", "application/json");		
+
+		request.AddHeader("Accept", "application/json");
 		request.AddHeader("Authorization", $"Bearer {_token}");
 
 		var response = await client.GetAsync(request);
-		
+
 		if (!response.IsSuccessStatusCode)
 		{
 			throw new Exception(response.ErrorMessage);
 		}
 
 		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
-		
+
 		var output = new List<SerieModel>();
 
 		foreach (var result in json.results)
@@ -50,7 +48,7 @@ public class TmdbManager
 
 				model.Id = result.id;
 				model.Name = result.name;
-				model.Description = result.overview;		
+				model.Description = result.overview;
 				model.ReleaseDate = result.first_air_date;
 			}
 			catch
@@ -63,9 +61,9 @@ public class TmdbManager
 
 		return output;
 	}
-	
+
 	public async Task<SerieModel> GetSerieByIdAsync(int id)
-	{		
+	{
 		var options = new RestClientOptions($"{_baseUrl}/tv/{id}");
 		var client = new RestClient(options);
 		var request = new RestRequest();

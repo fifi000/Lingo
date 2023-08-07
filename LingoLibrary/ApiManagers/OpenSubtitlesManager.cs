@@ -14,7 +14,7 @@ public class OpenSubtitlesManager
 	private string _token;
 
 	public OpenSubtitlesManager(IConfiguration configuration)
-    {
+	{
 		_apiKey = configuration["Api:open_subtitles:api_key"];
 		_username = configuration["Api:open_subtitles:username"];
 		_password = configuration["Api:open_subtitles:password"];
@@ -23,9 +23,9 @@ public class OpenSubtitlesManager
 	public async Task<string> GetSubtitles(int episodeId)
 	{
 		await LogIn();
-		
+
 		int fileId = await GetSubtitlesFileId(episodeId);
-		
+
 		string link = await GetDownloadLink(fileId);
 
 		return await DownloadSubtitles(link);
@@ -47,9 +47,9 @@ public class OpenSubtitlesManager
 		};
 
 		request.AddParameter("application/json", payload, ParameterType.RequestBody);
-		
+
 		var response = await client.ExecuteAsync(request, Method.Post);
-		
+
 		if (!response.IsSuccessStatusCode)
 		{
 			throw new Exception(response.ErrorMessage);

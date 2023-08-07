@@ -1,7 +1,4 @@
-﻿using LingoLibrary.Models;
-using System.Security.Cryptography;
-
-namespace LingoLibrary;
+﻿namespace LingoLibrary;
 
 public static class Helper
 {
