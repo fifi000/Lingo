@@ -22,9 +22,9 @@ public class OpenSubtitlesManager
 
 	public async Task<string> GetSubtitles(int episodeId)
 	{
-		int fileId = await GetSubtitlesFileId(episodeId);
-
 		await LogIn();
+		
+		int fileId = await GetSubtitlesFileId(episodeId);
 		
 		string link = await GetDownloadLink(fileId);
 
@@ -58,7 +58,6 @@ public class OpenSubtitlesManager
 		var json = JsonConvert.DeserializeObject<dynamic>(response.Content);
 
 		_token = (string)json.token;
-
 	}
 
 	private async Task<string> GetDownloadLink(int fileId)
@@ -95,7 +94,6 @@ public class OpenSubtitlesManager
 
 		request.AddHeader("Accept", "application/json");
 		request.AddHeader("Api-Key", $"{_apiKey}");
-		request.AddHeader("Content-Type", "application/json");
 
 		var response = await client.GetAsync(request);
 
