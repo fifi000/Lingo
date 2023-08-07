@@ -24,22 +24,20 @@ public static class MauiProgram
 	builder.Logging.AddDebug();
 #endif
 		// App Settings
-		var exec = System.Reflection.Assembly.GetExecutingAssembly().Location;
-		var path = System.IO.Path.GetDirectoryName(exec);
-		AppDomain.CurrentDomain.SetData("DataDirectory", path);
-
-		//builder.Configuration.AddJsonFile("appsettings.json");
 		var a = System.Reflection.Assembly.GetExecutingAssembly();
 		using var stream = a.GetManifestResourceStream("LingoApp.appsettings.json");
 		var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
 		builder.Configuration.AddConfiguration(config);
+
+		// Database file
+		AppDomain.CurrentDomain.SetData("DataDirectory", FileSystem.AppDataDirectory);
 
 		// APIs
 		builder.Services.AddSingleton<TmdbManager>();
 		builder.Services.AddSingleton<OpenSubtitlesManager>();
 		builder.Services.AddScoped<OpenAiManager>();
 
-		// Database
+		// Database Services
 		builder.Services.AddScoped<LiteDbDataAccess>();
 		builder.Services.AddScoped<SetData>();
 		builder.Services.AddScoped<SerieSearchData>();

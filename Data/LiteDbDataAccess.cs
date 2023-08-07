@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using LiteDB;
 using System;
+using System.IO;
 
 namespace Data;
 
@@ -10,8 +11,10 @@ public class LiteDbDataAccess
 
 	public LiteDbDataAccess(IConfiguration configuration)
     {
-		_databasePath = (string)AppDomain.CurrentDomain.GetData("DataDirectory")
-			+ configuration.GetConnectionString("LiteDbConnectionString");
+		var dataDir = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
+		var db = configuration.GetConnectionString("LiteDbConnectionString");
+		
+		_databasePath = Path.Combine(dataDir, db);
 	}
 
 	public LiteDatabase GetDatabase()
