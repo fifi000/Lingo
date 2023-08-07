@@ -86,11 +86,13 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 			// save set to db
 			SetData.CreateSet(Set);
+			_pageStatus = PageStatus.FoundResults;
 		}
 		catch (Exception)
 		{
 			_pageStatus = PageStatus.NoResultsFound;
 			return;
 		}
+
 	}
 }
