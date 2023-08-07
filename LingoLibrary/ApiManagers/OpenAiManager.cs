@@ -21,8 +21,8 @@ public class OpenAiManager
 	public async Task<List<WordModel>> GetWords(List<string> lines)
 	{
 		string context =
-			"Find 10 most advanced english vocabulary in given text. You mustn't list words under C1 english level."
-			+ "Verbs write with 'to' at front in bare impersonal form, add articles 'a' or 'an' to countable nouns."
+			"Find 10 most advanced english vocabulary (words and phrases) in given text. You mustn't list words under C1 english level."
+			+ "It's crucial you write verbs with 'to' at the front. You must add articles ('a' or 'an') to countable nouns."
 			+ @"List them with their Polish translations in JSON format e.g. {""to scribble"": ""bazgrać"",...}.";
 
 		// k reduces max number of words for a prompt 
