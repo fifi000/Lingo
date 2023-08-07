@@ -15,16 +15,8 @@
 @code {
 	public string SearchPhrase { get; set; }
 
-	private bool _collapseNavMenu = true;
-	private string _navMenuCssClass => _collapseNavMenu ? "collapse" : null;
-
 	private void SearchSeries()
 	{
 		NavigationManager.NavigateTo($"/?SearchPhrase={SearchPhrase}");
-	}
-
-	private void ToggleNavMenu()
-	{
-		_collapseNavMenu = !_collapseNavMenu;
 	}
 }
