@@ -64,11 +64,11 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Data\" />
-    </ItemGroup>
-
+	
+	<ItemGroup>
+		<Folder Include="Data\" />
+	</ItemGroup>
+	
     <ItemGroup>
       <ProjectReference Include="..\Data\Data.csproj" />
       <ProjectReference Include="..\LingoLibrary\LingoLibrary.csproj" />

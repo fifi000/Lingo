@@ -1,4 +1,5 @@
 ﻿@page "/words/{episodeId:int}"
+@using Newtonsoft.Json;
 
 @inject SetData SetData
 @inject OpenSubtitlesManager OpenSubtitlesManager
@@ -16,20 +17,60 @@ else if (_pageStatus == PageStatus.NoResultsFound)
 }
 else if (_pageStatus == PageStatus.FoundResults)
 {
-	<table class="table table-hover">
-		<thead>
+	<table class="table table-hover overflow-auto">
+		<thead class="position-sticky sticky-top table-secondary">
 			<tr>
-				@*<th scope="col">#</th>*@
-				<th scope="col">English</th>
-				<th scope="col">Polish</th>
+				<th scope="col">#</th>
+				<th scope="col">Original</th>
+				<th scope="col">Translation</th>
+				<th scope="col">
+					<div class="d-flex justify-content-end">
+						<div class="btn-group btn-group-sm">
+							@if (_pageMode == Mode.Base)
+							{
+								<button class="btn btn-warning" @onclick="TurnOnEditMode"><span class="oi oi-pencil"></span></button>
+								<button class="btn btn-danger" @onclick="TurnOnRemoveMode"><span class="oi oi-x"></span></button>
+							}
+							else if (_pageMode == Mode.Edit)
+							{
+								<button class="btn btn-warning" @onclick="() => TurnOffEditMode(false)">Dismiss</button>
+								<button class="btn btn-success" @onclick="() => TurnOffEditMode(true)"><span class="oi oi-check"></span></button>
+							}
+							else if (_pageMode == Mode.Remove)
+							{
+								<button class="btn btn-warning" @onclick="() => TurnOffRemoveMode(false)">Dismiss</button>
+								<button class="btn btn-primary" @onclick="HandleSelectAll">Select All</button>
+								<button class="btn btn-danger" @onclick="() => TurnOffRemoveMode(true)">Delete</button>
+							}
+
+						</div>
+					</div>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var pair in Set.Words)
+			@foreach (var (word, i) in _set.Words.Select((word, i) => (word, i)))
 			{
 				<tr>
-					<td>@pair.Original</td>
-					<td>@pair.Translation</td>
+					<th>@(i+1)</th>
+					@if (_pageMode == Mode.Edit)
+					{
+						<td><input class="form-control" style="max-width: 10rem" @bind-value="@word.Original" /></td>
+						<td><input class="form-control" style="max-width: 10rem" @bind-value="@word.Translation" /></td>
+					}
+					else
+					{
+						<td>@word.Original</td>
+						<td>@word.Translation</td>						
+					}
+
+					<td class="text-end">
+						@if (_pageMode == Mode.Remove)
+						{
+							<input class="form-check-input" type="checkbox" @bind="_wordsToRemove[i].Remove"
+								   @onclick="() => HandleWordsToRemove(word)"/>						
+						}
+					</td>
 				</tr>
 			}
 		</tbody>
@@ -40,12 +81,23 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 @code {
 
-	[Parameter]
-	public int EpisodeId { get; set; }	
+	enum Mode {Base, Edit, Remove}
 
-	public SetModel Set { get; set; }
+	class WordRemove
+	{
+		public WordModel Word { get; set; }
+		public bool Remove { get; set; }
+	}
+
+	[Parameter]
+	public int EpisodeId { get; set; }
+
+	private SetModel _set;
+	private List<WordRemove> _wordsToRemove;
+	private string _tempSet;
 
 	private PageStatus _pageStatus;
+	private Mode _pageMode = Mode.Base;
 
 	protected async override Task OnParametersSetAsync()
 	{
@@ -58,9 +110,9 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 		// check if a set with words is already created
 		// for this specific episode
-		Set = SetData.GetSet(EpisodeId);
+		_set = SetData.GetSet(EpisodeId);
 
-		if (Set is not null)
+		if (_set is not null)
 		{
 			_pageStatus = PageStatus.FoundResults;
 			return;
@@ -78,14 +130,14 @@ else if (_pageStatus == PageStatus.FoundResults)
 			var words = await OpenAiManager.GetWords(lines);
 
 			// create set
-			Set = new()
+			_set = new()
 			{
 				Words = words,
 				EpisodeId = EpisodeId
 			};
 
 			// save set to db
-			SetData.CreateSet(Set);
+			SetData.CreateSet(_set);
 			_pageStatus = PageStatus.FoundResults;
 		}
 		catch (Exception)
@@ -94,5 +146,61 @@ else if (_pageStatus == PageStatus.FoundResults)
 			return;
 		}
 
+	}
+
+	private void TurnOnEditMode()
+	{
+		_pageMode = Mode.Edit;
+
+		// save Set state before changes
+		_tempSet = JsonConvert.SerializeObject(_set);				
+	}
+
+	private void TurnOffEditMode(bool save)
+	{	
+		if (save)
+		{
+			// save changes
+			SetData.UpdateSet(_set);
+		}
+		else
+		{
+			// revert sate before changes
+			_set = JsonConvert.DeserializeObject<SetModel>(_tempSet);			
+		}
+
+		_pageMode = Mode.Base;
+	}
+
+	private void TurnOnRemoveMode()
+	{
+		_wordsToRemove = _set.Words.Select(x => new WordRemove { Word = x, Remove = false }).ToList();
+		_pageMode = Mode.Remove;
+	}
+
+	private void TurnOffRemoveMode(bool save)
+	{
+		if (save)
+		{
+			_wordsToRemove
+				.Where(x => x.Remove)
+				.ToList()
+				.ForEach(x => _set.Words.Remove(x.Word));
+			SetData.UpdateSet(_set);
+		}
+
+		_pageMode = Mode.Base;
+	}
+
+	private void HandleWordsToRemove(WordModel word)
+	{
+		var wordToRemove = _wordsToRemove.First(x => x.Word == word);
+		wordToRemove.Remove = !wordToRemove.Remove;
+	}
+
+	private void HandleSelectAll()
+	{
+		bool allSelected = _wordsToRemove.Count == _wordsToRemove.Where(x => x.Remove).Count();
+		_wordsToRemove.ForEach(x => x.Remove = !allSelected);
 	}
 }
