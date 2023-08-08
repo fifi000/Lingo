@@ -73,13 +73,13 @@ else if (_pageStatus == PageStatus.FoundResults)
 						<td>@word.Translation</td>						
 					}
 
-					<td class="text-end">
-						@if (_pageMode == Mode.Remove)
-						{
+					@if (_pageMode == Mode.Remove)
+					{
+						<td class="text-end">
 							<input class="form-check-input" type="checkbox" @bind="_wordsToRemove[i].Remove"
 								   @onclick="() => HandleWordsToRemove(word)"/>						
-						}
-					</td>
+						</td>
+					}
 				</tr>
 			}
 		</tbody>
@@ -89,8 +89,6 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 
 @code {
-
-	enum Mode {Base, Edit, Remove}
 
 	class WordRemove
 	{
