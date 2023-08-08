@@ -49,9 +49,18 @@ else if (_pageStatus == PageStatus.FoundResults)
 			</tr>
 		</thead>
 		<tbody>
+			@if (_pageMode == Mode.Edit)
+			{
+				<tr class="table-info">
+					<th>0</th>
+					<td><input class="form-control" style="max-width: 10rem" @bind-value="@_newWord.Original" /></td>
+					<td><input class="form-control" style="max-width: 10rem" @bind-value="@_newWord.Translation" /></td>
+					<td class="text-end"><button class="btn btn-success btn-sm rounded-circle" @onclick="AddNewWord"><span class="oi oi-plus"></span></button></td>				
+				</tr>
+			}
 			@foreach (var (word, i) in _set.Words.Select((word, i) => (word, i)))
 			{
-				<tr>
+				<tr @onclick="() => AddWordToRemove(word)">					
 					<th>@(i+1)</th>
 					@if (_pageMode == Mode.Edit)
 					{
@@ -95,6 +104,7 @@ else if (_pageStatus == PageStatus.FoundResults)
 	private SetModel _set;
 	private List<WordRemove> _wordsToRemove;
 	private string _tempSet;
+	private WordModel _newWord;
 
 	private PageStatus _pageStatus;
 	private Mode _pageMode = Mode.Base;
@@ -150,10 +160,12 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 	private void TurnOnEditMode()
 	{
-		_pageMode = Mode.Edit;
+		_newWord = new();
 
 		// save Set state before changes
 		_tempSet = JsonConvert.SerializeObject(_set);				
+
+		_pageMode = Mode.Edit;
 	}
 
 	private void TurnOffEditMode(bool save)
@@ -172,6 +184,12 @@ else if (_pageStatus == PageStatus.FoundResults)
 		_pageMode = Mode.Base;
 	}
 
+	private void AddNewWord()
+	{
+		_set.Words.Insert(0, _newWord);
+		_newWord = new();
+	}
+
 	private void TurnOnRemoveMode()
 	{
 		_wordsToRemove = _set.Words.Select(x => new WordRemove { Word = x, Remove = false }).ToList();
@@ -182,11 +200,16 @@ else if (_pageStatus == PageStatus.FoundResults)
 	{
 		if (save)
 		{
-			_wordsToRemove
-				.Where(x => x.Remove)
-				.ToList()
-				.ForEach(x => _set.Words.Remove(x.Word));
-			SetData.UpdateSet(_set);
+			if (_wordsToRemove.All(x => x.Remove))
+			{
+				SetData.DeleteSet(_set.EpisodeId);
+				_set.Words = new();
+			}
+			else
+			{
+				_wordsToRemove.Where(x => x.Remove).ToList().ForEach(x => _set.Words.Remove(x.Word));
+				SetData.UpdateSet(_set);
+			}
 		}
 
 		_pageMode = Mode.Base;
@@ -198,9 +221,19 @@ else if (_pageStatus == PageStatus.FoundResults)
 		wordToRemove.Remove = !wordToRemove.Remove;
 	}
 
+	private void AddWordToRemove(WordModel word)
+	{
+		if (_pageMode != Mode.Remove)
+		{
+			return;
+		}
+
+		_wordsToRemove.First(x => x.Word == word).Remove ^= true;
+	}
+
 	private void HandleSelectAll()
 	{
-		bool allSelected = _wordsToRemove.Count == _wordsToRemove.Where(x => x.Remove).Count();
+		bool allSelected = _wordsToRemove.All(x => x.Remove);
 		_wordsToRemove.ForEach(x => x.Remove = !allSelected);
 	}
 }
