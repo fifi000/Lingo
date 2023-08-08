@@ -1,0 +1,48 @@
+﻿
+<tr @onclick="HandleOnAddWordToRemove">
+	<th>@Number</th>
+	@if (PageMode == Mode.Edit)
+	{
+		<td><input class="form-control" style="max-width: 10rem" @bind-value="@Word.Original" /></td>
+		<td><input class="form-control" style="max-width: 10rem" @bind-value="@Word.Translation" /></td>
+	}
+	else
+	{
+		<td>@Word.Original</td>
+		<td>@Word.Translation</td>
+	}
+
+	@if (PageMode == Mode.Remove)
+	{
+		<td class="text-end">
+			<input class="form-check-input" type="checkbox" @bind="RemoveWord"/>
+		</td>
+	}
+	else
+	{
+		<td></td>	
+	}
+</tr>
+
+@code {
+	[Parameter]
+	public WordModel Word { get; set; }
+
+	[Parameter]
+	public Mode PageMode { get; set; }
+
+	[Parameter]
+	public int Number { get; set; }
+
+	[Parameter]
+	public bool RemoveWord { get; set; }
+
+	[Parameter]
+	public EventCallback<WordModel> OnAddWordToRemove { get; set; }
+
+
+	private async Task HandleOnAddWordToRemove()
+	{
+		await OnAddWordToRemove.InvokeAsync(Word);
+	}
+}
