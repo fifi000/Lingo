@@ -1,5 +1,5 @@
 ﻿
-<tr @onclick="HandleOnAddWordToRemove">
+<tr @onclick="HandleRowClick">
 	<th>@Number</th>
 	@if (PageMode == Mode.Edit)
 	{
@@ -20,9 +20,26 @@
 	}
 	else
 	{
-		<td></td>	
+		<td class="text-end">			
+			<iconify-icon icon="fluent-mdl2:chevron-up" rotate="@(_showExamples ? "" : "180deg")"></iconify-icon>
+		</td>	
 	}
 </tr>
+@if (_showExamples && _examples.Count != 0)
+{
+	<tr class="ac">
+		<td colspan="4">
+			<ul class="list-group">
+				@foreach (var (example, i) in _examples.Select((ex, i) => (ex, i)))
+				{
+					<li class="list-group-item">
+						<span style="white-space: pre-line">@example</span>
+					</li>
+				}
+			</ul>
+		</td>
+	</tr>
+}
 
 @code {
 	[Parameter]
@@ -38,11 +55,76 @@
 	public bool RemoveWord { get; set; }
 
 	[Parameter]
+	public List<string> Subtitles { get; set; }
+
+	[Parameter]
 	public EventCallback<WordModel> OnAddWordToRemove { get; set; }
 
+	private List<string> _examples;
 
-	private async Task HandleOnAddWordToRemove()
+	private bool _showExamples = false;
+
+	protected override void OnParametersSet()
 	{
-		await OnAddWordToRemove.InvokeAsync(Word);
+		_examples = new();
+
+		var trimmedWord = Word.Original;
+
+		if (trimmedWord.StartsWith("to ") || trimmedWord.StartsWith("an "))
+		{
+			trimmedWord = trimmedWord.Remove(0, 3);
+		}
+		else if (trimmedWord.StartsWith("a "))
+		{
+			trimmedWord = trimmedWord.Remove(0, 2);
+		}
+
+		var lines = Subtitles
+			.Select((line, i) => (line, i))
+			.Where(tup => tup.line.Contains(trimmedWord))
+			.OrderBy(tup => tup.i);
+
+		// for each line, find previous and next one
+		foreach (var (line, i) in lines)
+		{
+			// if current line is a consecutive line
+			// then add to the previous line (which is already in _examples)
+			// a next line 
+			if (lines.Any(tup => tup.i == i - 1))
+			{
+				if (i + 1 <= _examples.Count - 1)
+				{
+					_examples[_examples.Count - 1] += ".\n" + Subtitles[i + 1];
+				}
+				continue;
+			}
+			var example = line;
+
+			// add previous line
+			if (i > 0)
+			{
+				example = String.Join(".\n", Subtitles[i - 1], example);
+			}
+
+			// add next line
+			if (i < Subtitles.Count - 1)
+			{
+				example = String.Join(".\n", example, Subtitles[i + 1]);
+			}
+
+			_examples.Add(example + ".");
+		}
+	}
+
+	private async Task HandleRowClick()
+	{
+		if (PageMode == Mode.Remove)
+		{
+			await OnAddWordToRemove.InvokeAsync(Word);			
+		}
+		else if (PageMode == Mode.Base)
+		{
+			_showExamples = !_showExamples;
+		}
 	}
 }

@@ -17,8 +17,8 @@ else if (_pageStatus == PageStatus.NoResultsFound)
 }
 else if (_pageStatus == PageStatus.FoundResults)
 {
-	<table class="table table-hover overflow-auto">
-		<thead class="position-sticky sticky-top table-secondary">
+	<table class="table">
+		<thead class="position-sticky sticky-top table-dark">
 			<tr>
 				<th scope="col">#</th>
 				<th scope="col">Original</th>
@@ -60,7 +60,9 @@ else if (_pageStatus == PageStatus.FoundResults)
 			}
 			@foreach (var (word, i) in _set.Words.Select((word, i) => (word, i)))
 			{
-				<WordTableRow Number="i+1" Word="word" PageMode="_pageMode" RemoveWord="_wordsToRemove.Contains(word)" OnAddWordToRemove="AddWordToRemove"/>
+				<WordTableRow 
+					Number="i+1" Word="word" PageMode="_pageMode" Subtitles="_subtitles"
+					RemoveWord="_wordsToRemove.Contains(word)" OnAddWordToRemove="AddWordToRemove" />
 			}
 		</tbody>
 	</table>
@@ -75,8 +77,9 @@ else if (_pageStatus == PageStatus.FoundResults)
 
 	private SetModel _set;
 	private List<WordModel> _wordsToRemove = new();
-	private string _tempSet;
 	private WordModel _newWord;
+	private string _tempSet;
+	private List<string> _subtitles;
 
 	private PageStatus _pageStatus;
 	private Mode _pageMode = Mode.Base;
@@ -94,22 +97,22 @@ else if (_pageStatus == PageStatus.FoundResults)
 		// for this specific episode
 		_set = SetData.GetSet(EpisodeId);
 
-		if (_set is not null)
-		{
-			_pageStatus = PageStatus.FoundResults;
-			return;
-		}
-
 		try
 		{
 			// get subtitles
 			var subtitles = await OpenSubtitlesManager.GetSubtitles(EpisodeId);
 
 			// reformat subtitles
-			var lines = Helper.FormatSubtitles(subtitles);
+			_subtitles = Helper.FormatSubtitles(subtitles);
+
+			if (_set is not null)
+			{
+				_pageStatus = PageStatus.FoundResults;
+				return;
+			}
 
 			// call chat
-			var words = await OpenAiManager.GetWords(lines);
+			var words = await OpenAiManager.GetWords(_subtitles);
 
 			// create set
 			_set = new()
@@ -182,10 +185,8 @@ else if (_pageStatus == PageStatus.FoundResults)
 			}
 			else
 			{
-				if (SetData.UpdateSet(_set))
-				{					
-					_wordsToRemove.ForEach(w => _set.Words.Remove(w));
-				}
+				_wordsToRemove.ForEach(w => _set.Words.Remove(w));
+				SetData.UpdateSet(_set);
 			}
 		}
 
