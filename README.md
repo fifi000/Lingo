@@ -30,7 +30,7 @@ You can edit, add new or remove words in table. Also you can see examples of the
 Requires .NET SDK version 7.0 or higher</br>
 
 ### Configuration
-#### Updateing setting file
+#### Updating setting file
 Navigate to the `LingoApp/appsettings.json` file in LingoApp project and populate it with API keys and logging info (for OpenSubtitles).
 
 #### OpenAI model
