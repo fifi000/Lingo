@@ -15,7 +15,7 @@ public static class Helper
 			.Where(IsValidLine);
 
 		var text = String.Join(' ', lines);
-		return text.Split('.').ToList();
+		return text.Split('.').Where(x => !String.IsNullOrEmpty(x)).ToList();
 	}
 
 	private static bool IsValidLine(string line)
