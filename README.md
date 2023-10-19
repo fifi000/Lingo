@@ -4,13 +4,16 @@ Lingo is a versatile cross-platform application that empowers users to explore t
 ## Screenshots
 ### Windows
 Saved words are highlighted in green.
+
 ![Serie Page](/ReadmeImgs/windows_serie_page.png)
+![Serie Page](/ReadmeImgs/windows_words_page.png)
+
 
 ### Android
-![Main Page](/ReadmeImgs/android_main_page.png)
-![Serie Page](/ReadmeImgs/android_serie_page.png)
-![Words Page](/ReadmeImgs/android_words_page.png)
-![Words Example](/ReadmeImgs/android_words_example.png)
+<img src="ReadmeImgs/android_main_page.png" width=40%>
+<img src="ReadmeImgs/android_serie_page.png" width=40%>
+<img src="ReadmeImgs/android_words_page.png" width=40%>
+<img src="ReadmeImgs/android_words_example.png" width=40%>
 
 ## Behind the Scenes
 - **Searching Shows:** to search shows and gather additional info about series and episodes, app calls [TMDB API](https://developer.themoviedb.org/docs) 
