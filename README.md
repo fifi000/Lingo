@@ -10,10 +10,14 @@ Saved words are highlighted in green.
 
 
 ### Android
-<img src="ReadmeImgs/android_main_page.png" width=40%>
-<img src="ReadmeImgs/android_serie_page.png" width=40%>
-<img src="ReadmeImgs/android_words_page.png" width=40%>
-<img src="ReadmeImgs/android_words_example.png" width=40%>
+<div>
+  <img src="ReadmeImgs/android_main_page.png" width=40%>
+  <img src="ReadmeImgs/android_serie_page.png" width=40%>
+</div>
+<div>
+  <img src="ReadmeImgs/android_words_page.png" width=40%>
+  <img src="ReadmeImgs/android_words_example.png" width=40%>
+</div>
 
 ## Behind the Scenes
 - **Searching Shows:** to search shows and gather additional info about series and episodes, app calls [TMDB API](https://developer.themoviedb.org/docs) 
